@@ -1,21 +1,21 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "settlement.h"
+#include "Settlement.h"
 using std::string;
 using std::vector;
 
 //Constructor
-Settelment :: Settlement(const string &name, SettlementType type): _name(name), _type(type){}
+Settlement :: Settlement(const string &name, SettlementType type): name(name), type(type){}
 
-//Copy Constructor
+//Copy Constructor (no need)
 //Copy Assignment Operator
 //Destructor
-Settelment :: const string &getName() const{return &name;}
+Settlement :: const string &getName() const{return &name;}
 
-Settelment :: SettlementType getType() const{return &type;}
+Settlement :: SettlementType getType() const{return &type;}
 
-Settelment :: const string toString() const{
+Settlement :: const string toString() const{
     string typeStr;
     switch (_type) {
         case SettlementType::VILLAGE:
@@ -28,7 +28,7 @@ Settelment :: const string toString() const{
             typeStr = "Metropolis";
             break;
     }
-    return "Name: " + _name + "\n" + "Type: " + typeStr;
+    return "Name: " + _name + " " + "Type: " + typeStr;
 }
 
 

@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "string": "cpp",
+        "system_error": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "iterator": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
