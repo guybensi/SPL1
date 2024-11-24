@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Fcility.h"
+#include "Facility.h"
 using std::string;
 using std::vector;
 
