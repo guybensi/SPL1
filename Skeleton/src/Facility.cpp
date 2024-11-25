@@ -40,10 +40,10 @@ Facility :: FacilityStatus step(){
 Facility :: void setStatus(FacilityStatus status){
     switch (status) {
         case FacilityStatus::UNDER_CONSTRUCTIONS:
-            this->status = FacilityStatus::UNDER_CONSTRUCTIONS;
+            this.status = FacilityStatus::UNDER_CONSTRUCTIONS;
             break;
         case FacilityStatus::OPERATIONAL:
-            this->status = FacilityStatus::OPERATIONAL;
+            this.status = FacilityStatus::OPERATIONAL;
             break;
     }
 }
@@ -52,7 +52,7 @@ Facility :: const FacilityStatus& getStatus() const {return &status}
 
 Facility :: const string toString() const{
     string CurrStatus;
-    switch (this->status) {
+    switch (this.status) {
         case FacilityStatus::UNDER_CONSTRUCTIONS:
             CurrStatus = "UNDER_CONSTRUCTIONS";
             break;
@@ -61,7 +61,7 @@ Facility :: const string toString() const{
             break;
     }
     string CurrCategory;
-    switch (this->category) {
+    switch (this.category) {
         case FacilityCategory::LIFE_QUALITY:
             CurrCategory = "LIFE_QUALITY";
             break;
@@ -72,14 +72,14 @@ Facility :: const string toString() const{
             CurrCategory = "ENVIRONMENT";
             break;
     }
-     return "Name: " + this->name + " | " + 
-       "Settlement name: " + this->settlementName + " | " + 
+     return "Name: " + this.name + " | " + 
+       "Settlement name: " + this.settlementName + " | " + 
        "Category: " + CurrCategory + " | " + 
        "Status: " + CurrStatus + " | " +
-       "Price: " + std::to_string(this->price) + " | " +
-       "Life Quality Score: " + std::to_string(this->lifeQuality_score) + " | " +
-       "Economy Score: " + std::to_string(this->economy_score) + " | " +
-       "Environment Score: " + std::to_string(this->environment_score) + " | " +
-       "Time Left: " + std::to_string(this->timeLeft);
+       "Price: " + std::to_string(this.price) + " | " +
+       "Life Quality Score: " + std::to_string(this.lifeQuality_score) + " | " +
+       "Economy Score: " + std::to_string(this.economy_score) + " | " +
+       "Environment Score: " + std::to_string(this.environment_score) + " | " +
+       "Time Left: " + std::to_string(this.timeLeft);
 }
 

@@ -17,7 +17,7 @@ Settlement :: SettlementType getType() const{return &type;}
 
 Settlement :: const string toString() const{
     string typeStr;
-    switch (_type) {
+    switch (type) {
         case SettlementType::VILLAGE:
             typeStr = "Village";
             break;
@@ -28,7 +28,7 @@ Settlement :: const string toString() const{
             typeStr = "Metropolis";
             break;
     }
-    return "Name: " + _name + " " + "Type: " + typeStr;
+    return "Name: " + name + " " + "Type: " + typeStr;
 }
 
 
