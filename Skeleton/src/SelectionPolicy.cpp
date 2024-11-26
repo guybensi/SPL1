@@ -62,6 +62,12 @@ BalancedSelection * BalancedSelection :: clone() const override{
 }
 BalancedSelection :: ~BalancedSelection() override = default;
 
+void BalancedSelection ::setScores(int Curr_Life, int Curr_Eco, int Curr_Env){
+    LifeQualityScore = Curr_Life;
+    EconomyScore = Curr_Eco;
+    EnvironmentScore = Curr_Env;
+}
+
 
 
 //Constructor
