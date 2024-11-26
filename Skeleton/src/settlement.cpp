@@ -6,18 +6,15 @@ using std::string;
 using std::vector;
 
 //Constructor
-Settlement :: Settlement(const string &name, SettlementType type): name(name), type(type){}
+Settlement ::Settlement(const string &name, SettlementType type): name(name), type(type){}
 
-//Copy Constructor (no need)
-//Copy Assignment Operator
-//Destructor
-Settlement :: const string &getName() const{return &name;}
+const string& Settlement ::getName() const{return &name;}
 
-Settlement :: SettlementType getType() const{return &type;}
+SettlementType Settlement ::getType() const{return &type;}
 
-Settlement :: const string toString() const{
+const string Settlement ::toString() const{
     string typeStr;
-    switch (_type) {
+    switch (type) {
         case SettlementType::VILLAGE:
             typeStr = "Village";
             break;
@@ -28,7 +25,5 @@ Settlement :: const string toString() const{
             typeStr = "Metropolis";
             break;
     }
-    return "Name: " + _name + " " + "Type: " + typeStr;
+    return "Name: " + name + " " + "Type: " + typeStr;
 }
-
-
