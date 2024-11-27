@@ -7,7 +7,7 @@ using std::vector;
 
 //Constructor
 FacilityType ::FacilityType(const string &name, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
- name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score);{}
+ name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score){}
 
 const string & FacilityType ::getName() const {return name;}
 
@@ -25,11 +25,15 @@ FacilityCategory FacilityType ::getCategory() const {return category;}
 
 
 //Constructor
-Facility ::Facility(const string &name, const string &settlementName, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
-FacilityType(&name, category, price, lifeQuality_score, economy_score, environment_score), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price);{}
+Facility::Facility(const string &name, const string &settlementName, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score)
+    : FacilityType(name, category, price, lifeQuality_score, economy_score, environment_score), 
+      settlementName(settlementName), 
+      status(FacilityStatus::UNDER_CONSTRUCTIONS), 
+      timeLeft(price) {}
+
 
 Facility ::Facility(const FacilityType &type, const string &settlementName):
-FacilityType(type), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price);{}
+FacilityType(type), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price){}
 
 const string & Facility ::getSettlementName() const {return settlementName;}
 
@@ -46,10 +50,10 @@ FacilityStatus Facility ::step(){
 void  Facility ::setStatus(FacilityStatus status){
     switch (status) {
         case FacilityStatus::UNDER_CONSTRUCTIONS:
-            this.status = FacilityStatus::UNDER_CONSTRUCTIONS;
+            this->status = FacilityStatus::UNDER_CONSTRUCTIONS;
             break;
         case FacilityStatus::OPERATIONAL:
-            this.status = FacilityStatus::OPERATIONAL;
+            this->status = FacilityStatus::OPERATIONAL;
             break;
     }
 }
@@ -58,7 +62,7 @@ const FacilityStatus& Facility ::getStatus() const {return status;}
 
 const string Facility ::toString() const{
     string CurrStatus;
-    switch (this.status) {
+    switch (this->status) {
         case FacilityStatus::UNDER_CONSTRUCTIONS:
             CurrStatus = "UNDER_CONSTRUCTIONS";
             break;
@@ -67,7 +71,7 @@ const string Facility ::toString() const{
             break;
     }
     string CurrCategory;
-    switch (this.category) {
+    switch (this->category) {
         case FacilityCategory::LIFE_QUALITY:
             CurrCategory = "LIFE_QUALITY";
             break;
@@ -78,14 +82,14 @@ const string Facility ::toString() const{
             CurrCategory = "ENVIRONMENT";
             break;
     }
-     return "Name: " + this.name + " | " + 
-       "Settlement name: " + this.settlementName + " | " + 
+     return "Name: " + this->name + " | " + 
+       "Settlement name: " + this->settlementName + " | " + 
        "Category: " + CurrCategory + " | " + 
        "Status: " + CurrStatus + " | " +
-       "Price: " + std::to_string(this.price) + " | " +
-       "Life Quality Score: " + std::to_string(this.lifeQuality_score) + " | " +
-       "Economy Score: " + std::to_string(this.economy_score) + " | " +
-       "Environment Score: " + std::to_string(this.environment_score) + " | " +
-       "Time Left: " + std::to_string(this.timeLeft);
+       "Price: " + std::to_string(this->price) + " | " +
+       "Life Quality Score: " + std::to_string(this->lifeQuality_score) + " | " +
+       "Economy Score: " + std::to_string(this->economy_score) + " | " +
+       "Environment Score: " + std::to_string(this->environment_score) + " | " +
+       "Time Left: " + std::to_string(this->timeLeft);
 }
 

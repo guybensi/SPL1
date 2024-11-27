@@ -1,40 +1,42 @@
-#include "Facility.h"
 #include <iostream>
 #include <cassert>
+#include "Facility.h"
+#include "SelectionPolicy.h"
+#include <vector>
+
+using namespace std;
 
 int main() {
     // יצירת אובייקטים של FacilityType
     FacilityType waterSupply("Water Supply", FacilityCategory::LIFE_QUALITY, 1000, 80, 70, 90);
     FacilityType hospital("Hospital", FacilityCategory::LIFE_QUALITY, 5000, 95, 80, 85);
     FacilityType solarPlant("Solar Plant", FacilityCategory::ENVIRONMENT, 3000, 60, 50, 95);
+    FacilityType solarPanel("Solar Panel", FacilityCategory::ECONOMY, 1500, 70, 60, 80);
 
-    // יצירת אובייקטים של Facility
-    Facility waterSupplyFacility(waterSupply, "Kfar_SPL");
-    Facility hospitalFacility(hospital, "Kiryat_SPL");
-    Facility solarPlantFacility(solarPlant, "Mega_SPL");
+    vector<FacilityType> facilities = {waterSupply, hospital, solarPlant, solarPanel};
 
-    // בדיקות ל-FacilityType
-    assert(waterSupplyFacility.getName() == "Water Supply");
-    assert(waterSupplyFacility.getCategory() == FacilityCategory::LIFE_QUALITY);
-    assert(waterSupplyFacility.getCost() == 1000);
-    assert(waterSupplyFacility.getLifeQualityScore() == 80);
-    assert(waterSupplyFacility.getEconomyScore() == 70);
-    assert(waterSupplyFacility.getEnvironmentScore() == 90);
+    // יצירת אובייקטים של SelectionPolicy
+    NaiveSelection naiveSelection;
+    BalancedSelection balancedSelection(80, 75, 85);
+    EconomySelection economySelection;
+    SustainabilitySelection sustainabilitySelection;
 
-    // בדיקות ל-Facility
-    assert(waterSupplyFacility.getSettlementName() == "Kfar_SPL");
-    assert(waterSupplyFacility.getTimeLeft() == 1000);
+    // בדיקות ל-NaiveSelection
+    assert(naiveSelection.selectFacility(facilities).getName() == "Water Supply");
+    assert(naiveSelection.toString() == "The last selected index was: 0");
 
-    // בדיקה של פונקציית step
-    waterSupplyFacility.step();
-    assert(waterSupplyFacility.getTimeLeft() == 999);
-    assert(waterSupplyFacility.getStatus() == FacilityStatus::UNDER_CONSTRUCTIONS);
+    // בדיקות ל-BalancedSelection
+    assert(balancedSelection.selectFacility(facilities).getName() == "Solar Plant");
+    balancedSelection.setScores(85, 90, 80);
+    assert(balancedSelection.toString() == "The last selected index was: 0");
 
-    // בדיקה של שינוי סטטוס אחרי מספר צעדים
-    while (waterSupplyFacility.getTimeLeft() > 0) {
-        waterSupplyFacility.step();
-    }
-    assert(waterSupplyFacility.getStatus() == FacilityStatus::OPERATIONAL);
+    // בדיקות ל-EconomySelection
+    assert(economySelection.selectFacility(facilities).getName() == "Solar Panel");
+    assert(economySelection.toString() == "The last selected index was: 0");
+
+    // בדיקות ל-SustainabilitySelection
+    assert(sustainabilitySelection.selectFacility(facilities).getName() == "Solar Plant");
+    assert(sustainabilitySelection.toString() == "The last selected index was: 0");
 
     // אם כל הבדיקות הצליחו
     std::cout << "All tests passed!" << std::endl;
