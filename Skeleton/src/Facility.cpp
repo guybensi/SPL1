@@ -37,7 +37,10 @@ const int Facility ::getTimeLeft() const {return timeLeft;}
 
 FacilityStatus Facility ::step(){
     timeLeft--;
-    if (timeLeft == 0) {setStatus(FacilityStatus::OPERATIONAL)}
+    if (timeLeft == 0){
+        setStatus(FacilityStatus::OPERATIONAL);
+        }
+    return getStatus();
 }
 
 void  Facility ::setStatus(FacilityStatus status){
