@@ -1,6 +1,5 @@
 #include "Simulation.h"
 #include <iostream>
-
 using namespace std;
 
 Simulation* backup = nullptr;
@@ -19,3 +18,8 @@ int main(int argc, char** argv){
     }
     return 0;
 }
+
+
+#include <iostream>
+#include "Settlement.h"
+

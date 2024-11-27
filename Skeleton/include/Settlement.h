@@ -18,8 +18,10 @@ class Settlement {
         const string &getName() const;
         SettlementType getType() const;
         const string toString() const;
+        int getLimit();
 
         private:
             const string name;
             SettlementType type;
+            int limit;
 };

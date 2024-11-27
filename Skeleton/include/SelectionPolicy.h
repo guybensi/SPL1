@@ -26,10 +26,11 @@ class BalancedSelection: public SelectionPolicy {
     public:
         BalancedSelection(int LifeQualityScore, int EconomyScore, int EnvironmentScore);
         const FacilityType& selectFacility(const vector<FacilityType>& facilitiesOptions) override;
-        int distance(FacilityType CurrFacility);
+        int distance(FacilityType &CurrFacility);
         const string toString() const override;
         BalancedSelection *clone() const override;
         ~BalancedSelection() override = default;
+        void setScores(int Curr_Life, int Curr_Eco, int Curr_Env);
     private:
         int LifeQualityScore;
         int EconomyScore;
