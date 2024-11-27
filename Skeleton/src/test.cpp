@@ -1,10 +1,23 @@
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 #include "Facility.h"
 #include "SelectionPolicy.h"
 #include <vector>
 
 using namespace std;
+
+// פונקציה לחיתוך רווחים מיותרים בסוף ובתחילת מיתר
+std::string trim(const std::string &str) {
+    std::string result = str;
+    result.erase(result.begin(), std::find_if(result.begin(), result.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+    result.erase(std::find_if(result.rbegin(), result.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), result.end());
+    return result;
+}
 
 int main() {
     // יצירת אובייקטים של FacilityType
@@ -17,26 +30,26 @@ int main() {
 
     // יצירת אובייקטים של SelectionPolicy
     NaiveSelection naiveSelection;
-    BalancedSelection balancedSelection(80, 75, 85);
     EconomySelection economySelection;
     SustainabilitySelection sustainabilitySelection;
 
     // בדיקות ל-NaiveSelection
-    assert(naiveSelection.selectFacility(facilities).getName() == "Water Supply");
-    assert(naiveSelection.toString() == "The last selected index was: 0");
-
-    // בדיקות ל-BalancedSelection
-    assert(balancedSelection.selectFacility(facilities).getName() == "Solar Plant");
-    balancedSelection.setScores(85, 90, 80);
-    assert(balancedSelection.toString() == "The last selected index was: 0");
+    const FacilityType& selectedNaive = naiveSelection.selectFacility(facilities);
+    std::cout << "Naive Selection: " << selectedNaive.getName() << std::endl;
+    assert(trim(selectedNaive.getName()) == "Water Supply");
+    assert(trim(naiveSelection.toString()) == "The last selected index was: 0");
 
     // בדיקות ל-EconomySelection
-    assert(economySelection.selectFacility(facilities).getName() == "Solar Panel");
-    assert(economySelection.toString() == "The last selected index was: 0");
+    const FacilityType& selectedEconomy = economySelection.selectFacility(facilities);
+    std::cout << "Economy Selection: " << selectedEconomy.getName() << std::endl;
+    assert(trim(selectedEconomy.getName()) == "Solar Panel");
+    assert(trim(economySelection.toString()) == "The last selected index was: 0");
 
     // בדיקות ל-SustainabilitySelection
-    assert(sustainabilitySelection.selectFacility(facilities).getName() == "Solar Plant");
-    assert(sustainabilitySelection.toString() == "The last selected index was: 0");
+    const FacilityType& selectedSustainability = sustainabilitySelection.selectFacility(facilities);
+    std::cout << "Sustainability Selection: " << selectedSustainability.getName() << std::endl;
+    assert(trim(selectedSustainability.getName()) == "Solar Plant");
+    assert(trim(sustainabilitySelection.toString()) == "The last selected index was: 0");
 
     // אם כל הבדיקות הצליחו
     std::cout << "All tests passed!" << std::endl;

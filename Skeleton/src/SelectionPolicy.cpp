@@ -1,10 +1,10 @@
-#pragma once
 #include <vector>
 #include "Facility.h"
 #include "SelectionPolicy.h"
 #include <algorithm>
 #include <initializer_list>
 #include <climits>
+#include <stdexcept>
 using std::vector;
 
 //Constructor
@@ -37,27 +37,35 @@ const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType
     if (facilitiesOptions.empty()) {
     throw std::runtime_error("No facilities available to select ");} //מותר לזרוק חגירות?
     int diff = INT_MAX;
-    FacilityType* ans = nullptr;
-    for (FacilityType& currfacility : facilitiesOptions){
+    const FacilityType* ans = nullptr;
+    for (const FacilityType& currfacility : facilitiesOptions){
         int distancecheck = distance (currfacility);
+        std::cout << "Checking facility: " << currfacility.getName() 
+                  << " with distance: " << distancecheck << std::endl; // הוספתי הדפסה כאן
         if ( distancecheck < diff){
             ans = &currfacility;
             diff = distancecheck;
         } 
     }
+    std::cout << "Selected facility: " << ans->getName() << std::endl; // הוספתי הדפסה כאן
     return *ans;//לוודא טיפוס החזרה? צריך למחוק אותו? 
 }
 
-int BalancedSelection ::distance (FacilityType &CurrFacility){
-    int NewLife = this.LifeQualityScore + CurrFacility.getLifeQualityScore();
-    int NewEco = this.EconomyScore + CurrFacility.getEconomyScore();
-    int NewEnv = this.EnvironmentScore + CurrFacility.getEnvironmentScore();
+int BalancedSelection ::distance (const FacilityType &CurrFacility){
+    int NewLife = this->LifeQualityScore + CurrFacility.getLifeQualityScore();
+    int NewEco = this->EconomyScore + CurrFacility.getEconomyScore();
+    int NewEnv = this->EnvironmentScore + CurrFacility.getEnvironmentScore();
     return (std::max({NewLife, NewEco, NewEnv})) - (std::min({NewLife, NewEco, NewEnv}));
 }
 
-const string BalancedSelection ::toString() const{// מה להדפיס?
-    
+const string BalancedSelection::toString() const {
+    return "Balanced selection with scores: " +
+           std::to_string(LifeQualityScore) + ", " +
+           std::to_string(EconomyScore) + ", " +
+           std::to_string(EnvironmentScore);
 }
+
+    
 BalancedSelection * BalancedSelection :: clone() const{
     return new BalancedSelection(*this);
 }
@@ -77,17 +85,18 @@ EconomySelection::EconomySelection(): lastSelectedIndex(-1){}
 const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
     for (int i = 1;i<=facilitiesOptions.size(); i++){
         int releventIndex = (lastSelectedIndex + i) % facilitiesOptions.size();
-        if (facilitiesOptions[relventIndex].getCategory() == FacilityCategory::ECONOMY) {
+        if (facilitiesOptions[releventIndex].getCategory() == FacilityCategory::ECONOMY) {
             lastSelectedIndex = releventIndex;
-            return facilitiesOptions[relventIndex];
+            return facilitiesOptions[releventIndex];
         }
     }
      throw std::runtime_error("No eco facility found"); //לוודא אם מותר לזרוק חריגה
 }
 
-const string EconomySelection::toString() const{
-    return "The last selected index was: " + std :: to_string(lastSelectedIndex);
+const string EconomySelection::toString() const {
+    return "The last selected index was: " + std::to_string(lastSelectedIndex);
 }
+
 
 EconomySelection * EconomySelection::clone() const{
     return new EconomySelection(*this); 
@@ -103,19 +112,20 @@ SustainabilitySelection::SustainabilitySelection():lastSelectedIndex(-1){}
 const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
         for (int i = 1;i<=facilitiesOptions.size(); i++){
         int releventIndex = (lastSelectedIndex + i) % facilitiesOptions.size();
-        if (facilitiesOptions[relventIndex].getCategory() == FacilityCategory::ENVIRONMENT) {
+        if (facilitiesOptions[releventIndex].getCategory() == FacilityCategory::ENVIRONMENT) {
             lastSelectedIndex = releventIndex;
-            return facilitiesOptions[relventIndex];
+            return facilitiesOptions[releventIndex];
         }
     }
      throw std::runtime_error("No environment facility found");
 }
 
-const string SustainabilitySelection::toString() const;{
+const string SustainabilitySelection::toString() const{
     return "The last selected index was: " + std :: to_string(lastSelectedIndex);
 }
 
 SustainabilitySelection *SustainabilitySelection::clone() const{
-    return new EconomySelection(*this); 
+    return new SustainabilitySelection(*this);
 }
+
 
