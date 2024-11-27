@@ -20,9 +20,9 @@ Settlement ::Settlement(const string &name, SettlementType type): name(name), ty
     }
 }
 
-const string& Settlement ::getName() const{return &name;}
+const string& Settlement ::getName() const{return name;}
 
-SettlementType Settlement ::getType() const{return &type;}
+SettlementType Settlement ::getType() const{return type;}
 
 int Settlement ::getLimit(){return limit;}
 
@@ -39,5 +39,5 @@ const string Settlement ::toString() const{
             typeStr = "Metropolis";
             break;
     }
-    return "Name: " + name + " " + "Type: " + typeStr;
+    return "Name: " + name + ", " + "Type: " + typeStr;
 }
