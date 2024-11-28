@@ -12,18 +12,22 @@ class SelectionPolicy;
 
 class Simulation {
     public:
-        Simulation(const string &configFilePath);
-        void start();
+        Simulation(const string &configFilePath);// ------------
+        Simulation(const Simulation &other);// Copy Constructor
+        Simulation& operator=(const Simulation &other);// Copy Assignment Operator
+        void start();// ------------
         void addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy);
-        void addAction(BaseAction *action);
+        void addAction(BaseAction *action);// ------------
         bool addSettlement(Settlement *settlement);
         bool addFacility(FacilityType facility);
+        bool isFacilityExists(const string &facilityName);//our method
         bool isSettlementExists(const string &settlementName);
         Settlement *getSettlement(const string &settlementName);
         Plan &getPlan(const int planID);
-        void step();
-        void close();
-        void open();
+        void step();// ------------
+        void close();// ------------
+        void open();// ------------
+        ~Simulation();// Destructor
 
     private:
         bool isRunning;
