@@ -30,7 +30,6 @@ class BalancedSelection: public SelectionPolicy {
         const string toString() const override;
         BalancedSelection *clone() const override;
         ~BalancedSelection() override = default;
-        void setScores(int Curr_Life, int Curr_Eco, int Curr_Env);
     private:
         int LifeQualityScore;
         int EconomyScore;
