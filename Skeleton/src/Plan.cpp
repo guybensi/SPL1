@@ -98,8 +98,10 @@ void Plan::addFacility(Facility* facility){ //למה הפונקציה קיימת
     facilities.push_back(facility);
 }
 
-const string Plan::toString() const{
+const string Plan::toString() const{//updated funcion****** with status
     string result = "PlanID: " + std::to_string(plan_id) + "\n";
+    if (status == PlanStatus::AVALIABLE){result += "Status: Available";}
+    else{result += "Status: Busy";}
     result += "SettlementName: " + settlement->getName() + "\n"; 
     result += "PlanStatus: " + (status == PlanStatus::AVALIABLE ? "AVALIABLE" : "BUSY") + "\n";
     result += "SelectionPolicy: " + selectionPolicy->toString() + "\n"; 
