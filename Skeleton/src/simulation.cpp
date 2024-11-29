@@ -133,16 +133,18 @@ bool Simulation::isSettlementExists(const string &settlementName){
     return false; 
 }
 
-Settlement* Simulation::getSettlement(const string &settlementName){
+Settlement* Simulation::getSettlement(const string &settlementName){//********updated function
     for (const Settlement* curr : settlements){
         if (curr->getName() == settlementName){return curr;}
     }
+    throw std::runtime_error("Settlement not found: " + settlementName);
 }
 
-Plan &Simulation::getPlan(const int planID){
+Plan &Simulation::getPlan(const int planID){//********updated function
     for (const Plan& curr : plans){
         if (curr.getId()){ return curr;}
     }
+    throw std::runtime_error("plan not found: " + settlementName);
 }
 
 void Simulation::step(){//new method******
