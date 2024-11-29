@@ -38,8 +38,8 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
         }
         else if (arguments[0] == "plan"){//creating a new plan
             if (arguments.size() != 3){throw std::runtime_error("Invalid plan format in config file");}
-            string settlementName = arguments[1];          
-            if (!isSettlementExists (settlementName)){throw std::runtime_error("Settlement not found in plan: " + settlementName);}
+            string settlementName = arguments[1];   
+            // an error wil be thrown if the settlement doesnt exists
             Settlement *settlement = getSettlement(settlementName);
             string policyType = arguments[2];  
             SelectionPolicy *selectionPolicy = nullptr;
