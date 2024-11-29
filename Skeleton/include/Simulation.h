@@ -22,8 +22,8 @@ class Simulation {
         bool addFacility(FacilityType facility);//********updated function
         bool isFacilityExists(const string &facilityName);//our method
         bool isSettlementExists(const string &settlementName);
-        Settlement *getSettlement(const string &settlementName);
-        Plan &getPlan(const int planID);
+        Settlement *getSettlement(const string &settlementName);//********updated function
+        Plan &getPlan(const int planID);//********updated function
         void step();//new method******
         void close();//new method******
         void open();//new method******
