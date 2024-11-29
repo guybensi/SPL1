@@ -35,19 +35,19 @@ BalancedSelection ::BalancedSelection(int LifeQualityScore, int EconomyScore, in
 
 const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType>& facilitiesOptions){
     if (facilitiesOptions.empty()) {
-    throw std::runtime_error("No facilities available to select ");} //מותר לזרוק חגירות?
+        throw std::runtime_error("No facilities available to select ");} //מותר לזרוק חגירות?
     int diff = INT_MAX;
-    const FacilityType* ans = nullptr;
+    const FacilityType* ans = nullptr; //לבדוק לגבי קונסט של A
     for (const FacilityType& currfacility : facilitiesOptions){
         int distancecheck = distance (currfacility);
-        std::cout << "Checking facility: " << currfacility.getName() 
-                  << " with distance: " << distancecheck << std::endl; // הוספתי הדפסה כאן
         if ( distancecheck < diff){
             ans = &currfacility;
             diff = distancecheck;
         } 
     }
-    std::cout << "Selected facility: " << ans->getName() << std::endl; // הוספתי הדפסה כאן
+    LifeQualityScore = LifeQualityScore + ans->getLifeQualityScore;
+    EconomyScore = EconomyScore + ans->getEconomyScore;
+    EnvironmentScore = EnvironmentScore + ans->getEnvironmentScore;
     return *ans;//לוודא טיפוס החזרה? צריך למחוק אותו? 
 }
 
@@ -68,13 +68,6 @@ const string BalancedSelection::toString() const {
     
 BalancedSelection * BalancedSelection :: clone() const{
     return new BalancedSelection(*this);
-}
-
-
-void BalancedSelection ::setScores(int Curr_Life, int Curr_Eco, int Curr_Env){
-    LifeQualityScore = Curr_Life;
-    EconomyScore = Curr_Eco;
-    EnvironmentScore = Curr_Env;
 }
 
 

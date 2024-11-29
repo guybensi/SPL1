@@ -14,6 +14,8 @@ enum class PlanStatus {
 class Plan {
     public:
         Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions);
+        Plan(const Plan &other);//Copy Constructor
+        Plan& operator=(const Plan &other);//Copy Assignment Operator
         const int getlifeQualityScore() const;
         const int getEconomyScore() const;
         const int getEnvironmentScore() const;
@@ -24,6 +26,8 @@ class Plan {
         void addFacility(Facility* facility);
         const string toString() const;
         void scoreUpdate(Facility* facility);//our method
+        const int getId();// our method
+        ~Plan();//Destructor
 
     private:
         int plan_id;
