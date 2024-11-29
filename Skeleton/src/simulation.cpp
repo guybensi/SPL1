@@ -94,6 +94,7 @@ Plan &Simulation::getPlan(const int planID){
 void Simulation::step();
 void Simulation::close();
 void Simulation::open();
+
 // Destructor
 Simulation:: ~Simulation(){
     for (BaseAction* act : actionsLog){
