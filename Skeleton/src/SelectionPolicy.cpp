@@ -17,7 +17,7 @@ static SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& sel
     } else if (selectionPolicyType == "sus") {
         policy = new SustainabilitySelection();
     } else {
-        return 0;
+        return nullptr;
     }
     return policy->clone();// למה לא פשוט להחזיר פוליסה
 }
