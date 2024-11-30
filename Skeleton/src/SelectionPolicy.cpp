@@ -7,6 +7,21 @@
 #include <stdexcept>
 using std::vector;
 
+//SelectionPolicy
+static SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& selectionPolicyType){//new method******
+    SelectionPolicy* policy = nullptr;
+    if (selectionPolicyType == "eco") {
+        policy = new EconomySelection();
+    } else if (selectionPolicyType == "bal") {
+        policy = new BalancedSelection(0, 0, 0);
+    } else if (selectionPolicyType == "sus") {
+        policy = new SustainabilitySelection();
+    } else {
+        throw std::runtime_error("Unknown selection policy: " + selectionPolicyType);
+    }
+    return policy->clone();
+}
+
 //Constructor
 NaiveSelection ::NaiveSelection(): lastSelectedIndex(-1){} //לוודא בשלושתם
 

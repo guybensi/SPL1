@@ -100,9 +100,10 @@ class ChangePlanPolicy : public BaseAction {
     private:
         const int planId;
         const string newPolicy;
+        string previousPolicy;  // saving the old policy
 };
 
-
+// ***********עשיתי עד כאן
 class PrintActionsLog : public BaseAction {
     public:
         PrintActionsLog();
