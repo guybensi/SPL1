@@ -32,7 +32,7 @@ class Simulation {
     private:
         bool isRunning;
         int planCounter; //For assigning unique plan IDs
-        vector<BaseAction*> actionsLog;
+        vector<BaseAction*> actionsLog;// לא נגענו בזה!!!
         vector<Plan> plans;
         vector<Settlement*> settlements;
         vector<FacilityType> facilitiesOptions;

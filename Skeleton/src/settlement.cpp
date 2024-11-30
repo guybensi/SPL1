@@ -26,7 +26,7 @@ SettlementType Settlement ::getType() const{return type;}
 
 int Settlement ::getLimit(){return limit;}
 
-const string Settlement::settlementTypeToString() const{//new method****
+const string Settlement::settlementTypeToString() const{
     switch (type) {
         case SettlementType::VILLAGE:
             return "Village";
@@ -39,6 +39,6 @@ const string Settlement::settlementTypeToString() const{//new method****
     }
 }
 
-const string Settlement ::toString() const{//updated method****
+const string Settlement ::toString() const{
     return "Name: " + name + ", Type: " + settlementTypeToString();
 }

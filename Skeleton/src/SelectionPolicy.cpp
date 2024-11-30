@@ -17,27 +17,27 @@ static SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& sel
     } else if (selectionPolicyType == "sus") {
         policy = new SustainabilitySelection();
     } else {
-        throw std::runtime_error("Unknown selection policy: " + selectionPolicyType);
+        return 0;
     }
-    return policy->clone();
+    return policy->clone();// למה לא פשוט להחזיר פוליסה
 }
 
 //Constructor
-NaiveSelection ::NaiveSelection(): lastSelectedIndex(-1){} //לוודא בשלושתם
+NaiveSelection ::NaiveSelection(): lastSelectedIndex(-1){} 
 
 const FacilityType& NaiveSelection ::selectFacility(const vector<FacilityType>& facilitiesOptions){
  if (facilitiesOptions.empty()) {
-        throw std::out_of_range("Vector is empty");// לבדוק בפורום 
+        throw std::out_of_range("Vector is empty");
     }
     lastSelectedIndex++;
     return facilitiesOptions[(lastSelectedIndex % facilitiesOptions.size())];
 }
 
-const string NaiveSelection ::toString() const{ // האם צריך להחזיק מתקן ולהחזיר אותו?
+const string NaiveSelection ::toString() const{ 
     return "The last selected index was: " + std :: to_string(lastSelectedIndex);
 }
 
- NaiveSelection * NaiveSelection ::clone() const{//מיקום כוכבית? //בנאי מעתיק ששולח בנאי מעתיק?
+ NaiveSelection* NaiveSelection ::clone() const{
     return new NaiveSelection(*this); 
 }
 
@@ -50,7 +50,7 @@ BalancedSelection ::BalancedSelection(int LifeQualityScore, int EconomyScore, in
 
 const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType>& facilitiesOptions){
     if (facilitiesOptions.empty()) {
-        throw std::runtime_error("No facilities available to select ");} //מותר לזרוק חגירות?
+        throw std::runtime_error("No facilities available to select ");} 
     int diff = INT_MAX;
     const FacilityType* ans = nullptr; //לבדוק לגבי קונסט של A
     for (const FacilityType& currfacility : facilitiesOptions){
@@ -98,7 +98,7 @@ const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>&
             return facilitiesOptions[releventIndex];
         }
     }
-     throw std::runtime_error("No eco facility found"); //לוודא אם מותר לזרוק חריגה
+     throw std::runtime_error("No eco facility found"); 
 }
 
 const string EconomySelection::toString() const {
