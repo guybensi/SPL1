@@ -10,7 +10,7 @@ using std::string;
 using std::vector;
 
 //Constructor
-Simulation::Simulation(const string &configFilePath) : isRunning(false), planCounter(0){//new method******
+Simulation::Simulation(const string &configFilePath) : isRunning(false), planCounter(0){
     // reading from the file
     std::ifstream file(configFilePath);
     if (!file.is_open()) {throw std::runtime_error("Failed to open config file.");}
@@ -24,7 +24,8 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
             if (arguments.size() != 3){throw std::runtime_error("Invalid settlement format in config file");}
             string name = arguments[1];
             SettlementType type = static_cast<SettlementType>(std::stoi(arguments[2]));
-            settlements.push_back(new Settlement(name, type));
+            if(!addSettlement(new Settlement(name, type))){throw std::runtime_error("Invalid settlement");}
+            
         }
         else if (arguments[0] == "facility"){//creating a new facility
             if (arguments.size() != 7){throw std::runtime_error("Invalid facility format in config file");}
@@ -33,26 +34,16 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
             int price = std::stoi(arguments[3]);
             int lifeQualityScore = std::stoi(arguments[4]);
             int ecoScore = std::stoi(arguments[5]);
-            int envScore = std::stoi(arguments[6]);           
-            facilitiesOptions.push_back(FacilityType(name, category, price, lifeQualityScore, ecoScore, envScore));
+            int envScore = std::stoi(arguments[6]);  
+            if(!addFacility(FacilityType(name, category, price, lifeQualityScore, ecoScore, envScore))){throw std::runtime_error("Invalid facility");}      
         }
         else if (arguments[0] == "plan"){//creating a new plan
             if (arguments.size() != 3){throw std::runtime_error("Invalid plan format in config file");}
             string settlementName = arguments[1];   
-            // an error wil be thrown if the settlement doesnt exists
             Settlement *settlement = getSettlement(settlementName);
             string policyType = arguments[2];  
-            SelectionPolicy *selectionPolicy = nullptr;
-            if (policyType == "eco") {
-                selectionPolicy = new EconomySelection();
-            } else if (policyType == "bal") {
-                selectionPolicy = new BalancedSelection(0, 0, 0); // defoult values
-            } else if (policyType == "sus") {
-                selectionPolicy = new SustainabilitySelection();
-            } else {
-                throw std::runtime_error("Unknown selection policy: " + policyType);
-            }
-            addPlan(settlement, selectionPolicy);
+            SelectionPolicy *selectionPolicy = createSelectionPolicy(policyType);
+            addPlan(settlement, selectionPolicy);//צריך לוודא תקינות של הקובץ
         }
     }
     file.close();
@@ -95,26 +86,19 @@ Simulation& Simulation::operator=(const Simulation &other){
 
 void Simulation::start();
 
-void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){//********updated function
-    std::vector<std::string> validSelectionPolicies = {"nve", "bal", "eco", "env"};
-    bool isValidPolicy = std::find(validSelectionPolicies.begin(), validSelectionPolicies.end(), selectionPolicy->getPolicy()) != validSelectionPolicies.end();
-    
-    if (!isValidPolicy || isSettlementExists(settlement->getName())) {
-        throw std::out_of_range("Cannot create this plan");
-    }
+void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){
     plans.push_back(Plan(planCounter++, *settlement, selectionPolicy, facilitiesOptions));
 }
 
 void Simulation::addAction(BaseAction *action);
 
-bool Simulation::addSettlement(Settlement *settlement){//********updated function
-    if (isSettlementExists(settlement->getName())){throw std::out_of_range("Settlement already exists");}
-    Settlement* sett = new (settlement->getName(), settlement->getType()
-    settlements.push_back(sett);
+bool Simulation::addSettlement(Settlement *settlement){
+    if (isSettlementExists(settlement->getName())){return false;}
+    settlements.push_back(settlement);
     return true;
 }
-bool Simulation::addFacility(FacilityType facility){//********updated function
-    if (isFacilityExists(facility.getName())){throw std::out_of_range("Facility already exists");}
+bool Simulation::addFacility(FacilityType facility){
+    if (isFacilityExists(facility.getName())){return false;}
     facilitiesOptions.push_back(facility);
     return true;
 }
@@ -133,35 +117,34 @@ bool Simulation::isSettlementExists(const string &settlementName){
     return false; 
 }
 
-Settlement* Simulation::getSettlement(const string &settlementName){//********updated function
+Settlement* Simulation::getSettlement(const string &settlementName){
     for (const Settlement* curr : settlements){
         if (curr->getName() == settlementName){return curr;}
     }
-    throw std::runtime_error("Settlement not found: " + settlementName);
+    return 0;
 }
 
-Plan &Simulation::getPlan(const int planID){//********updated function
+Plan &Simulation::getPlan(const int planID){
     for (const Plan& curr : plans){
         if (curr.getId() == planID){ return curr;}
     }
-    throw std::runtime_error("plan not found: " + planID);
+    return 0;
 }
 
-void Simulation::step(){//new method******
-    open();
+void Simulation::step(){
     for (Plan p : plans){
         p.step();
     }
-    close();
 }
-void Simulation::close(){//new method******
+
+void Simulation::close(){
     for (const Plan& curr : plans){
         cout << curr.toString() << '\n' ;
     }
     isRunning = false;
 }
 
-void Simulation::open(){isRunning = true;}//new method******
+void Simulation::open(){isRunning = true;}
 
 // Destructor
 Simulation:: ~Simulation(){

@@ -63,6 +63,18 @@ const int Plan::getEnvironmentScore() const {return environment_score;}
 
 void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {this->selectionPolicy = selectionPolicy;}
 
+string Plan::getSelectionPolicy() const {//our method
+    if (dynamic_cast<NaiveSelection*>(selectionPolicy)) {
+        return "NaiveSelection";
+    } else if (dynamic_cast<BalancedSelection*>(selectionPolicy)) {
+        return "BalancedSelection";
+    } else if (dynamic_cast<EconomySelection*>(selectionPolicy)) {
+        return "EconomySelection";
+    } else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
+        return "SustainabilitySelection";
+    }
+}
+
 void Plan::step(){
     //as long as i can build more
     while (status == PlanStatus::AVALIABLE){
@@ -98,7 +110,7 @@ void Plan::addFacility(Facility* facility){ //למה הפונקציה קיימת
     facilities.push_back(facility);
 }
 
-const string Plan::toString() const{//updated funcion****** with status
+const string Plan::toString() const{
     string result = "PlanID: " + std::to_string(plan_id) + "\n";
     if (status == PlanStatus::AVALIABLE){result += "Status: Available";}
     else{result += "Status: Busy";}
@@ -110,7 +122,7 @@ const string Plan::toString() const{//updated funcion****** with status
     result += "EnvironmentScore: " + std::to_string(environment_score) + "\n";
     for (const Facility* facility : facilities) {
         result += "FacilityName: " + facility->toString() + "\n";  
-        result += "FacilityStatus: " + (facility->getStatus() == FacilityStatus::UNDER_CONSTRUCTION ? "UNDER_CONSTRUCTION" : "OPERATIONAL") + "\n"; // Assuming Facility has a `getStatus` method
+        result += "FacilityStatus: " + (facility->getStatus() == FacilityStatus::UNDER_CONSTRUCTION ? "UNDER_CONSTRUCTION" : "OPERATIONAL") + "\n"; 
     }
     return result;
 }
@@ -125,7 +137,7 @@ const int Plan::getId(){return plan_id;}// our method
 
 // Destructor
 Plan::~Plan() {
-    delete settlement;
+    delete settlement;//לבדוק האם למחוק באמת
     delete selectionPolicy;
     for (Facility* facility : underConstruction) {
         delete facility;

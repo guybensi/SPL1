@@ -6,13 +6,12 @@ enum class SettlementType;
 enum class FacilityCategory;
 
 //Constructor
-BaseAction::BaseAction(): errorMsg(""), status(0){}
+BaseAction::BaseAction(): errorMsg(""){}
 ActionStatus BaseAction::getStatus() const{return status;}
 void BaseAction::complete(){status = ActionStatus::COMPLETED;}
 void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
     this->errorMsg = errorMsg; 
-    cout << "Error: " << errorMsg << endl; 
 }
 const string BaseAction::&getErrorMsg() const{return errorMsg;}
 
@@ -31,6 +30,7 @@ void SimulateStep::act(Simulation &simulation) override{
     for (int i = 1; i <= numOfSteps; i++){
         simulation.step();
     }
+    complete();
 }
 SimulateStep::const string toString() const override{
     return "SimulateStep: " + std::to_string(numOfSteps) + " steps";
@@ -43,12 +43,12 @@ SimulateStep* SimulateStep::clone() const override{return new SimulateStep(*this
 AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy):settlementName(settlementName), selectionPolicy(selectionPolicy){}
 void AddPlan::act(Simulation &simulation) override{
     Settlement* settlement = simulation.getSettlement(settlementName);     
-    if (!settlement) {//settlement not found           
-            error("Settlement " + settlementName + " not found.");
-            return;
+    if (settlement == 0) {//settlement not found           
+        error("Settlement " + settlementName + " not found.");
+        return;
         }
     SelectionPolicy* selectionPolicy = SelectionPolicy::createSelectionPolicy(selectionPolicyType);
-    if (!selectionPolicy) {
+    if (selectionPolicy == 0) {//selection policy not found 
         error("Invalid selection policy: " + selectionPolicyType);
         return;
     }
@@ -68,12 +68,11 @@ AddPlan* AddPlan::clone() const override{return new AddPlan(*this);}
 //Constructor
 AddSettlement::AddSettlement(const string &settlementName,SettlementType settlementType):settlementName(settlementName), settlementType(settlementType){} 
 void AddSettlement::act(Simulation &simulation) override {
-    if (simulation.isSettlementExists(settlementName)) {
-        error("Settlement: " + settlementName +"already exists");
-        return; 
-    }
     Settlement* newSettlement = new Settlement(settlementName, SettlementType (settlementType));
-    simulation.addSettlement(newSettlement);
+    if(!simulation.addSettlement(newSettlement)){
+        error("Settlement: " + settlementName +"already exists");
+        return;
+    }  
     complete();
 }
 AddSettlement* AddSettlement::clone() const override{return new AddSettlement(*this);}
@@ -89,13 +88,11 @@ const string AddSettlement::toString() const override{
 AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
         facilityName(facilityName), facilityCategory(facilityCategory), price(price),lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(environmentScore){}
 void AddFacility::act(Simulation &simulation) override {
-    if (simulation.isFacilityExists(facilityName)) {
+    FacilityType& newFacility = FacilityType(facilityName, facilityCategory, price, lifeQualityScore, economyScore, environmentScore);
+    if(!simulation.addFacility(newFacility)){
         error("Facility: " + facilityName + "already exists");
         return;
     }
-    FacilityCategory category = static_cast<FacilityCategory>(facilityCategory);// צריך פונקציה שממירה ערך מספרי לקטגוריה או להשאיר ככה?
-    FacilityType* newFacility = new FacilityType(facilityName, category, price, lifeQualityScore, economyScore, environmentScore);
-    simulation.addFacility(newFacility);
     complete();
 }
 AddFacility* AddFacility::clone() const override{return new AddFacility(*this);}
@@ -114,7 +111,7 @@ const string AddFacility::toString() const override{
 PrintPlanStatus::PrintPlanStatus(int planId):planId(planId){}
 void PrintPlanStatus::act(Simulation &simulation) override {
     Plan* plan = simulation.getPlan(planId);  
-    if (!plan) {// checks if the plan exists
+    if (plan == 0) {// checks if the plan exists
         error("Plan: " + planId + "doesn't exist");
         return; 
     }
@@ -131,27 +128,19 @@ const string PrintPlanStatus::toString() const override{
 
 //Constructor
 
-ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy):planId(planId), newPolicy(newPolicy){
-    Plan* plan = simulation.getPlan(planId);
-    if (plan) {
-        previousPolicy = plan->getSelectionPolicy()->toString();
-    }
-    // אולי אפשר למחוק פה את התנאי
-    else {
-        previousPolicy = "";
-    }
-}
+ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy):planId(planId), newPolicy(newPolicy){}
 void ChangePlanPolicy::act(Simulation &simulation) override {
     Plan* plan = simulation.getPlan(planId);
-    if (!plan) {
+    if (plan == 0) {
         error("Plan: " + planId + "doesn't exist");
         return;
     }
+    this->previousPolicy = plan->getSelectionPolicy();
     if (previousPolicy == newPolicy) {
         error("Cannot change selection policy");
         return;
     }
-    plan->setSelectionPolicy(newPolicy);// לבדוק האם בבנאי של מאוזן נשלחים גם ערכים
+    plan->setSelectionPolicy(newPolicy);//לתקן!!! זה לא צריך לקבל מחרוזת
     complete();
 }
 ChangePlanPolicy* ChangePlanPolicy::clone() const override{return new ChangePlanPolicy(*this);}

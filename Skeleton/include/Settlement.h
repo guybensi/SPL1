@@ -17,8 +17,8 @@ class Settlement {
         Settlement(const string &name, SettlementType type);
         const string &getName() const;
         SettlementType getType() const;
-        const string settlementTypeToString() const//new method****
-        const string toString() const;//updated method****
+        const string settlementTypeToString() const//our method
+        const string toString() const;
         int getLimit();//our method
 
         private:
