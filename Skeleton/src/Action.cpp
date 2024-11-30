@@ -43,12 +43,12 @@ SimulateStep* SimulateStep::clone() const override{return new SimulateStep(*this
 AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy):settlementName(settlementName), selectionPolicy(selectionPolicy){}
 void AddPlan::act(Simulation &simulation) override{
     Settlement* settlement = simulation.getSettlement(settlementName);     
-    if (settlement == 0) {//settlement not found           
+    if (settlement == nullptr) {//settlement not found           
         error("Settlement " + settlementName + " not found.");
         return;
         }
-    SelectionPolicy* selectionPolicy = SelectionPolicy::createSelectionPolicy(selectionPolicyType);
-    if (selectionPolicy == 0) {//selection policy not found 
+    SelectionPolicy* selectionPolicy = SelectionPolicy::createSelectionPolicy(selectionPolicyType);// אורי פה זה בסדר כי זה בטוח תוכנית חדשה
+    if (selectionPolicy == nullptr) {//selection policy not found 
         error("Invalid selection policy: " + selectionPolicyType);
         return;
     }
@@ -110,8 +110,8 @@ const string AddFacility::toString() const override{
 //Constructor
 PrintPlanStatus::PrintPlanStatus(int planId):planId(planId){}
 void PrintPlanStatus::act(Simulation &simulation) override {
-    Plan* plan = simulation.getPlan(planId);  
-    if (plan == 0) {// checks if the plan exists
+    Plan& plan = simulation.getPlan(planId);  
+    if (plan == nullptr) {// צריך לבדוק כי בחתימת הפוקנציה של יש & ואז אי אפשר להחזיר נול
         error("Plan: " + planId + "doesn't exist");
         return; 
     }
@@ -130,8 +130,8 @@ const string PrintPlanStatus::toString() const override{
 
 ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy):planId(planId), newPolicy(newPolicy){}
 void ChangePlanPolicy::act(Simulation &simulation) override {
-    Plan* plan = simulation.getPlan(planId);
-    if (plan == 0) {
+    Plan& plan = simulation.getPlan(planId);
+    if (plan == 0) {// צריך לבדוק כי בחתימת הפוקנציה של יש & ואז אי אפשר להחזיר נול
         error("Plan: " + planId + "doesn't exist");
         return;
     }

@@ -121,14 +121,14 @@ Settlement* Simulation::getSettlement(const string &settlementName){
     for (const Settlement* curr : settlements){
         if (curr->getName() == settlementName){return curr;}
     }
-    return 0;
+    return nullptr;
 }
 
 Plan &Simulation::getPlan(const int planID){
     for (const Plan& curr : plans){
         if (curr.getId() == planID){ return curr;}
     }
-    return 0;
+    return nullptr;
 }
 
 void Simulation::step(){
