@@ -142,9 +142,9 @@ Settlement* Simulation::getSettlement(const string &settlementName){//********up
 
 Plan &Simulation::getPlan(const int planID){//********updated function
     for (const Plan& curr : plans){
-        if (curr.getId()){ return curr;}
+        if (curr.getId() == planID){ return curr;}
     }
-    throw std::runtime_error("plan not found: " + settlementName);
+    throw std::runtime_error("plan not found: " + planID);
 }
 
 void Simulation::step(){//new method******

@@ -26,18 +26,19 @@ SettlementType Settlement ::getType() const{return type;}
 
 int Settlement ::getLimit(){return limit;}
 
-const string Settlement ::toString() const{
-    string typeStr;
+const string Settlement::settlementTypeToString() const{//new method****
     switch (type) {
         case SettlementType::VILLAGE:
-            typeStr = "Village";
-            break;
+            return "Village";
         case SettlementType::CITY:
-            typeStr = "City";
-            break;
+            return "City";
         case SettlementType::METROPOLIS:
-            typeStr = "Metropolis";
-            break;
+            return "Metropolis";
+        default:
+            return "Unknown";
     }
-    return "Name: " + name + ", " + "Type: " + typeStr;
+}
+
+const string Settlement ::toString() const{//updated method****
+    return "Name: " + name + ", Type: " + settlementTypeToString();
 }

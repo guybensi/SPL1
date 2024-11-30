@@ -9,6 +9,7 @@ class SelectionPolicy {
         virtual const string toString() const = 0;
         virtual SelectionPolicy* clone() const = 0;
         virtual ~SelectionPolicy() = default;
+        static SelectionPolicy* createSelectionPolicy(const string& selectionPolicyType){//new method******
 };
 
 class NaiveSelection: public SelectionPolicy {
