@@ -8,7 +8,7 @@
 using std::vector;
 
 //SelectionPolicy
-static SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& selectionPolicyType){//new method******
+SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& selectionPolicyType){//new method******
     SelectionPolicy* policy = nullptr;
     if (selectionPolicyType == "eco") {
         policy = new EconomySelection();
@@ -19,13 +19,13 @@ static SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& sel
     } else {
         return nullptr;
     }
-    return policy->clone();// למה לא פשוט להחזיר פוליסה
+    return policy;// למה לא פשוט להחזיר פוליסה
 }
 
 //Constructor
-NaiveSelection ::NaiveSelection(): lastSelectedIndex(-1){} 
+NaiveSelection::NaiveSelection():lastSelectedIndex(-1){} 
 
-const FacilityType& NaiveSelection ::selectFacility(const vector<FacilityType>& facilitiesOptions){
+const FacilityType& NaiveSelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
  if (facilitiesOptions.empty()) {
         throw std::out_of_range("Vector is empty");
     }
@@ -46,9 +46,9 @@ const string NaiveSelection ::toString() const{
 
 
 //Constructor
-BalancedSelection ::BalancedSelection(int LifeQualityScore, int EconomyScore, int EnvironmentScore): LifeQualityScore(LifeQualityScore), EconomyScore(EconomyScore), EnvironmentScore(EnvironmentScore){}
+BalancedSelection::BalancedSelection(int LifeQualityScore, int EconomyScore, int EnvironmentScore):LifeQualityScore(LifeQualityScore), EconomyScore(EconomyScore), EnvironmentScore(EnvironmentScore){}
 
-const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType>& facilitiesOptions){
+const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType&> facilitiesOptions){
     if (facilitiesOptions.empty()) {
         throw std::runtime_error("No facilities available to select ");} 
     int diff = INT_MAX;
@@ -60,9 +60,9 @@ const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType
             diff = distancecheck;
         } 
     }
-    LifeQualityScore = LifeQualityScore + ans->getLifeQualityScore;
-    EconomyScore = EconomyScore + ans->getEconomyScore;
-    EnvironmentScore = EnvironmentScore + ans->getEnvironmentScore;
+    LifeQualityScore = LifeQualityScore + ans->getLifeQualityScore();
+    EconomyScore = EconomyScore + ans->getEconomyScore();
+    EnvironmentScore = EnvironmentScore + ans->getEnvironmentScore();
     return *ans;//לוודא טיפוס החזרה? צריך למחוק אותו? 
 }
 
@@ -70,7 +70,7 @@ int BalancedSelection ::distance (const FacilityType &CurrFacility){
     int NewLife = this->LifeQualityScore + CurrFacility.getLifeQualityScore();
     int NewEco = this->EconomyScore + CurrFacility.getEconomyScore();
     int NewEnv = this->EnvironmentScore + CurrFacility.getEnvironmentScore();
-    return (std::max({NewLife, NewEco, NewEnv})) - (std::min({NewLife, NewEco, NewEnv}));
+    return std::max({NewLife, NewEco, NewEnv}) - std::min({NewLife, NewEco, NewEnv});
 }
 
 const string BalancedSelection::toString() const {
@@ -88,7 +88,7 @@ BalancedSelection * BalancedSelection :: clone() const{
 
 
 //Constructor
-EconomySelection::EconomySelection(): lastSelectedIndex(-1){}
+EconomySelection::EconomySelection():lastSelectedIndex(-1){}
 
 const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
     for (int i = 1;i<=facilitiesOptions.size(); i++){

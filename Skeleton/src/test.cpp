@@ -28,31 +28,36 @@ int main() {
 
     vector<FacilityType> facilities = {waterSupply, hospital, solarPlant, solarPanel};
 
-    // יצירת אובייקטים של SelectionPolicy
-    NaiveSelection naiveSelection;
-    EconomySelection economySelection;
-    SustainabilitySelection sustainabilitySelection;
+    // יצירת אובייקטים של SelectionPolicy בעזרת createSelectionPolicy
+    SelectionPolicy* naivePolicy = SelectionPolicy::createSelectionPolicy("bal"); // NaiveSelection
+    SelectionPolicy* economyPolicy = SelectionPolicy::createSelectionPolicy("eco"); // EconomySelection
+    SelectionPolicy* sustainabilityPolicy = SelectionPolicy::createSelectionPolicy("sus"); // SustainabilitySelection
 
     // בדיקות ל-NaiveSelection
-    const FacilityType& selectedNaive = naiveSelection.selectFacility(facilities);
+    const FacilityType& selectedNaive = naivePolicy->selectFacility(facilities);
     std::cout << "Naive Selection: " << selectedNaive.getName() << std::endl;
     assert(trim(selectedNaive.getName()) == "Water Supply");
-    assert(trim(naiveSelection.toString()) == "The last selected index was: 0");
+    assert(trim(naivePolicy->toString()) == "The last selected index was: 0");
 
     // בדיקות ל-EconomySelection
-    const FacilityType& selectedEconomy = economySelection.selectFacility(facilities);
+    const FacilityType& selectedEconomy = economyPolicy->selectFacility(facilities);
     std::cout << "Economy Selection: " << selectedEconomy.getName() << std::endl;
     assert(trim(selectedEconomy.getName()) == "Solar Panel");
-    assert(trim(economySelection.toString()) == "The last selected index was: 0");
+    assert(trim(economyPolicy->toString()) == "The last selected index was: 0");
 
     // בדיקות ל-SustainabilitySelection
-    const FacilityType& selectedSustainability = sustainabilitySelection.selectFacility(facilities);
+    const FacilityType& selectedSustainability = sustainabilityPolicy->selectFacility(facilities);
     std::cout << "Sustainability Selection: " << selectedSustainability.getName() << std::endl;
     assert(trim(selectedSustainability.getName()) == "Solar Plant");
-    assert(trim(sustainabilitySelection.toString()) == "The last selected index was: 0");
+    assert(trim(sustainabilityPolicy->toString()) == "The last selected index was: 0");
 
     // אם כל הבדיקות הצליחו
     std::cout << "All tests passed!" << std::endl;
+
+    // שחרור זיכרון
+    delete naivePolicy;
+    delete economyPolicy;
+    delete sustainabilityPolicy;
 
     return 0;
 }

@@ -6,6 +6,7 @@
 #include "Settlement.h"
 #include "Simulation.h"
 #include <bits/algorithmfwd.h>
+#include "Auxiliary.h"
 using std::string;
 using std::vector;
 
@@ -84,13 +85,13 @@ Simulation& Simulation::operator=(const Simulation &other){
     } 
 }
 
-void Simulation::start();
+void Simulation::start();// צריך עדיין לממש
 
 void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){
     plans.push_back(Plan(planCounter++, *settlement, selectionPolicy, facilitiesOptions));
 }
 
-void Simulation::addAction(BaseAction *action);
+void Simulation::addAction(BaseAction *action);// צריך עדיין לממש
 
 bool Simulation::addSettlement(Settlement *settlement){
     if (isSettlementExists(settlement->getName())){return false;}
@@ -124,12 +125,14 @@ Settlement* Simulation::getSettlement(const string &settlementName){
     return nullptr;
 }
 
-Plan &Simulation::getPlan(const int planID){
-    for (const Plan& curr : plans){
+Plan& Simulation::getPlan(const int planID){
+    for (Plan& curr : plans){
         if (curr.getId() == planID){ return curr;}
     }
-    return nullptr;
+
 }
+
+int Simulation::getplanCounter(){return planCounter;}//new method******
 
 void Simulation::step(){
     for (Plan p : plans){
