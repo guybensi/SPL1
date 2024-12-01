@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <algorithm>
+#include <cctype>  // להוסיף זאת עבור isspace
 #include "Facility.h"
 #include "SelectionPolicy.h"
 #include <vector>
@@ -69,4 +70,3 @@ int main() {
 
     return 0;
 }
-

@@ -15,11 +15,12 @@ enum class SettlementType {
 class Settlement {
     public:
         Settlement(const string &name, SettlementType type);
+        Settlement(const Settlement& other) = default;
         const string &getName() const;
         SettlementType getType() const;
         const string settlementTypeToString() const;//our method
         const string toString() const;
-        int getLimit();//our method
+        int getLimit() const;//our method
 
         private:
             const string name;
