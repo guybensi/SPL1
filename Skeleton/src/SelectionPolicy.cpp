@@ -7,7 +7,7 @@
 #include <stdexcept>
 using std::vector;
 
-//SelectionPolicy
+/*SelectionPolicy
 SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& selectionPolicyType){//new method******
     SelectionPolicy* policy = nullptr;
     if (selectionPolicyType == "eco") {
@@ -21,7 +21,7 @@ SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& selectionP
     }
     return policy;// למה לא פשוט להחזיר פוליסה
 }
-
+*/
 //Constructor
 NaiveSelection::NaiveSelection():lastSelectedIndex(-1){} 
 
@@ -48,7 +48,7 @@ const string NaiveSelection ::toString() const{
 //Constructor
 BalancedSelection::BalancedSelection(int LifeQualityScore, int EconomyScore, int EnvironmentScore):LifeQualityScore(LifeQualityScore), EconomyScore(EconomyScore), EnvironmentScore(EnvironmentScore){}
 
-const FacilityType& BalancedSelection ::selectFacility(const vector<FacilityType&> facilitiesOptions){
+const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
     if (facilitiesOptions.empty()) {
         throw std::runtime_error("No facilities available to select ");} 
     int diff = INT_MAX;

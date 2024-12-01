@@ -28,36 +28,45 @@ int main() {
 
     vector<FacilityType> facilities = {waterSupply, hospital, solarPlant, solarPanel};
 
-    // יצירת אובייקטים של SelectionPolicy בעזרת createSelectionPolicy
-    SelectionPolicy* naivePolicy = SelectionPolicy::createSelectionPolicy("bal"); // NaiveSelection
-    SelectionPolicy* economyPolicy = SelectionPolicy::createSelectionPolicy("eco"); // EconomySelection
-    SelectionPolicy* sustainabilityPolicy = SelectionPolicy::createSelectionPolicy("sus"); // SustainabilitySelection
+    // יצירת אובייקטים של SelectionPolicy
+    NaiveSelection naiveSelection;
+    EconomySelection economySelection;
+    SustainabilitySelection sustainabilitySelection;
+    BalancedSelection balancedSelection(0, 0, 0);
 
     // בדיקות ל-NaiveSelection
-    const FacilityType& selectedNaive = naivePolicy->selectFacility(facilities);
+    const FacilityType& selectedNaive = naiveSelection.selectFacility(facilities);
     std::cout << "Naive Selection: " << selectedNaive.getName() << std::endl;
     assert(trim(selectedNaive.getName()) == "Water Supply");
-    assert(trim(naivePolicy->toString()) == "The last selected index was: 0");
+    assert(trim(naiveSelection.toString()) == "The last selected index was: 0");
 
     // בדיקות ל-EconomySelection
-    const FacilityType& selectedEconomy = economyPolicy->selectFacility(facilities);
+    const FacilityType& selectedEconomy = economySelection.selectFacility(facilities);
     std::cout << "Economy Selection: " << selectedEconomy.getName() << std::endl;
     assert(trim(selectedEconomy.getName()) == "Solar Panel");
-    assert(trim(economyPolicy->toString()) == "The last selected index was: 0");
+    assert(trim(economySelection.toString()) == "The last selected index was: 3");
 
     // בדיקות ל-SustainabilitySelection
-    const FacilityType& selectedSustainability = sustainabilityPolicy->selectFacility(facilities);
+    const FacilityType& selectedSustainability = sustainabilitySelection.selectFacility(facilities);
     std::cout << "Sustainability Selection: " << selectedSustainability.getName() << std::endl;
     assert(trim(selectedSustainability.getName()) == "Solar Plant");
-    assert(trim(sustainabilityPolicy->toString()) == "The last selected index was: 0");
+    assert(trim(sustainabilitySelection.toString()) == "The last selected index was: 2");
+
+    // בדיקות ל-BalancedSelection
+    const FacilityType& selectedBalanced = balancedSelection.selectFacility(facilities);
+    std::cout << "Balanced Selection: " << selectedBalanced.getName() << std::endl;
+    assert(trim(selectedBalanced.getName()) == "Hospital");
+
+    // עדכון לבדוק את הערכים המעודכנים אחרי סלקציה ב-BalancedSelection
+    std::string expectedBalancedString = "Balanced selection with scores: " +
+           std::to_string(95) + ", " +  // LifeQualityScore לאחר סלקציה
+           std::to_string(80) + ", " +  // EconomyScore לאחר סלקציה
+           std::to_string(85);          // EnvironmentScore לאחר סלקציה
+    assert(trim(balancedSelection.toString()) == expectedBalancedString);
 
     // אם כל הבדיקות הצליחו
     std::cout << "All tests passed!" << std::endl;
 
-    // שחרור זיכרון
-    delete naivePolicy;
-    delete economyPolicy;
-    delete sustainabilityPolicy;
-
     return 0;
 }
+
