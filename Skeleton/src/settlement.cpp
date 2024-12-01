@@ -24,7 +24,6 @@ const string& Settlement ::getName() const{return name;}
 
 SettlementType Settlement ::getType() const{return type;}
 
-int Settlement ::getLimit(){return limit;}
 
 const string Settlement::settlementTypeToString() const{
     switch (type) {
@@ -42,3 +41,5 @@ const string Settlement::settlementTypeToString() const{
 const string Settlement ::toString() const{
     return "Name: " + name + ", Type: " + settlementTypeToString();
 }
+
+int Settlement::getLimit()const {return limit;}
