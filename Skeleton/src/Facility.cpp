@@ -40,6 +40,9 @@ const string & Facility ::getSettlementName() const {return settlementName;}
 const int Facility ::getTimeLeft() const {return timeLeft;}
 
 FacilityStatus Facility ::step(){
+    if(status == FacilityStatus::OPERATIONAL){
+        return getStatus();
+    }
     timeLeft--;
     if (timeLeft == 0){
         setStatus(FacilityStatus::OPERATIONAL);
