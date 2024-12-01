@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "Simulation.h"
+using namespace std;
 enum class SettlementType;
 enum class FacilityCategory;
 
@@ -110,12 +111,12 @@ const string AddFacility::toString() const override{
 //Constructor
 PrintPlanStatus::PrintPlanStatus(int planId):planId(planId){}
 void PrintPlanStatus::act(Simulation &simulation) override {
-    Plan& plan = simulation.getPlan(planId);  
-    if (plan == nullptr) {// צריך לבדוק כי בחתימת הפוקנציה של יש & ואז אי אפשר להחזיר נול
-        error("Plan: " + planId + "doesn't exist");
+    if (planId < 0 || planId >= simulation.getplanCounter()) {//the id is not legal
+        error("Plan: " + std::to_string(planId) + "doesn't exist");
         return; 
     }
-    cout << plan->toString() << endl;
+    Plan& plan = simulation.getPlan(planId);  
+    cout << plan.toString() << endl;
     complete();
 }
 PrintPlanStatus* PrintPlanStatus::clone() const override{return new PrintPlanStatus(*this);}
@@ -130,17 +131,17 @@ const string PrintPlanStatus::toString() const override{
 
 ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy):planId(planId), newPolicy(newPolicy){}
 void ChangePlanPolicy::act(Simulation &simulation) override {
-    Plan& plan = simulation.getPlan(planId);
-    if (plan == 0) {// צריך לבדוק כי בחתימת הפוקנציה של יש & ואז אי אפשר להחזיר נול
-        error("Plan: " + planId + "doesn't exist");
-        return;
+    if (planId < 0 || planId >= simulation.getplanCounter()) {//the id is not legal
+        error("Plan: " + std::to_string(planId) + "doesn't exist");
+        return; 
     }
-    this->previousPolicy = plan->getSelectionPolicy();
+    Plan& plan = simulation.getPlan(planId);
+    this->previousPolicy = plan.getSelectionPolicy();
     if (previousPolicy == newPolicy) {
         error("Cannot change selection policy");
         return;
     }
-    plan->setSelectionPolicy(newPolicy);//לתקן!!! זה לא צריך לקבל מחרוזת
+    plan.setSelectionPolicy(newPolicy);//לתקן!!! זה לא צריך לקבל מחרוזת
     complete();
 }
 ChangePlanPolicy* ChangePlanPolicy::clone() const override{return new ChangePlanPolicy(*this);}

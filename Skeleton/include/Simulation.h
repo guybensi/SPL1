@@ -24,6 +24,7 @@ class Simulation {
         bool isSettlementExists(const string &settlementName);
         Settlement *getSettlement(const string &settlementName);//********updated function
         Plan &getPlan(const int planID);//********updated function
+        int getplanCounter();//new method******
         void step();//new method******
         void close();//new method******
         void open();//new method******
