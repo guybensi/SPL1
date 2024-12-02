@@ -59,15 +59,41 @@ const int Plan::getEnvironmentScore() const {return environment_score;}
 
 void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {this->selectionPolicy = selectionPolicy;}
 
+bool Plan::changePolicy(const string newPolicy){//our method
+    if (newPolicy == "eco") {
+        setSelectionPolicy(new EconomySelection());
+        return true; 
+    } else if (newPolicy == "env") {
+        setSelectionPolicy(new SustainabilitySelection());
+        return true;
+    } else if (newPolicy == "nve") {
+        setSelectionPolicy(new NaiveSelection());
+        return true;
+    } else if (newPolicy == "bal") {
+        int newEcoScore = getEconomyScore();
+        int newLifeScore = getlifeQualityScore();
+        int newEnvDcore = getEnvironmentScore();
+        for (Facility* FcilityUnderConstruction : underConstruction){
+            newEcoScore += FcilityUnderConstruction->getEconomyScore();
+            newLifeScore += FcilityUnderConstruction->getLifeQualityScore();
+            newEnvDcore += FcilityUnderConstruction->getEnvironmentScore();
+        }
+        setSelectionPolicy (new BalancedSelection (newLifeScore, newEcoScore, newEnvDcore));
+        return true;    
+    }else {
+        return false;
+    }
+}
+
 string Plan::getSelectionPolicy() const {//our method
     if (dynamic_cast<NaiveSelection*>(selectionPolicy)) {
-        return "NaiveSelection";
+        return "nve";
     } else if (dynamic_cast<BalancedSelection*>(selectionPolicy)) {
-        return "BalancedSelection";
+        return "bal";
     } else if (dynamic_cast<EconomySelection*>(selectionPolicy)) {
-        return "EconomySelection";
+        return "eco";
     } else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
-        return "SustainabilitySelection";
+        return "env";
     }
 }
 

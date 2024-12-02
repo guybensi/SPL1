@@ -15,11 +15,14 @@ class Plan {
     public:
         Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions);
         Plan(const Plan &other);//Copy Constructor
-        Plan& operator=(const Plan &other);//Copy Assignment Operator
+        Plan& operator=(const Plan &other);//Copy Assignment Operator      
+        Plan(Plan &&other) = default;// Move Constructor
+        Plan& operator=(Plan &&other) = default;// Move Assignment Operator
         const int getlifeQualityScore() const;
         const int getEconomyScore() const;
         const int getEnvironmentScore() const;
         void setSelectionPolicy(SelectionPolicy *selectionPolicy);
+        bool changePolicy(const string newPolicy);//our method
         string getSelectionPolicy() const;//our method
         void step();
         void printStatus();
