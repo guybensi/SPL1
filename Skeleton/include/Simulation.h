@@ -25,6 +25,7 @@ class Simulation {
         bool isFacilityExists(const string &facilityName);//our method
         bool isSettlementExists(const string &settlementName);
         Settlement *getSettlement(const string &settlementName);
+        vector<BaseAction*>& getlog();//our method
         Plan &getPlan(const int planID);
         int getplanCounter();
         void step();

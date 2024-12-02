@@ -283,6 +283,8 @@ Settlement* Simulation::getSettlement(const string &settlementName){
     return nullptr;
 }
 
+vector<BaseAction*>& Simulation::getlog(){return actionsLog;}//our method
+
 Plan& Simulation::getPlan(const int planID){
     for (Plan& curr : plans){
         if (curr.getId() == planID){ return curr;}
@@ -302,6 +304,7 @@ void Simulation::close(){
         cout << curr.toString() << '\n' ;
     }
     isRunning = false;
+    //צריך לשחרר זכרון פה?
 }
 
 void Simulation::open(){isRunning = true;}
@@ -329,7 +332,9 @@ Simulation:: ~Simulation(){
     for (BaseAction* act : actionsLog){
         delete act;
     }
+    actionsLog.clear();
     for (Settlement *sett : settlements){
         delete sett;
     }
+    settlements.clear();
 }

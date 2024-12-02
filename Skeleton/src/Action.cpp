@@ -5,11 +5,19 @@
 using namespace std;
 enum class SettlementType;
 enum class FacilityCategory;
-
+extern Simulation* backup;
 //--------------------------------------------------------------------------------------
 //Constructor
 BaseAction::BaseAction(): errorMsg(""){}
 ActionStatus BaseAction::getStatus() const{return status;}
+string BaseAction::StatusToString () const{//our method
+    switch (status) {
+        case ActionStatus::COMPLETED:
+            return "COMPLETED";
+        case ActionStatus::ERROR:
+            return "ERROR";
+    }
+}
 void BaseAction::complete(){status = ActionStatus::COMPLETED;}
 void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
@@ -39,6 +47,10 @@ const string SimulateStep::toString() const{
 }
 SimulateStep* SimulateStep::clone() const{return new SimulateStep(*this);}
 
+string SimulateStep::description()const {//our method
+    return "simulateStep " + std::to_string(numOfSteps) + " " + StatusToString();
+}
+
 
 //--------------------------------------------------------------------------------------
 //Constructor
@@ -61,6 +73,9 @@ const string AddPlan::toString() const{
             return "AddPlan: Settlement Name = " + settlementName + ", Selection Policy = " + selectionPolicy;
         }
 AddPlan* AddPlan::clone() const{return new AddPlan(*this);}
+string AddPlan::description()const {//our method
+    return "Plan " + settlementName + " " + selectionPolicy + " " + StatusToString();
+}
 
 
 
@@ -78,8 +93,21 @@ void AddSettlement::act(Simulation &simulation){
     complete();
 }
 AddSettlement* AddSettlement::clone() const{return new AddSettlement(*this);}
+string AddSettlement::SettlementTypeToString() const {//our method
+    switch (settlementType) {
+        case SettlementType::VILLAGE:
+            return "VILLAGE";
+        case SettlementType::CITY:
+            return "CITY";
+        case SettlementType::METROPOLIS:
+            return "METROPOLIS";
+    }
+}
 const string AddSettlement::toString() const{
-    return "AddSettlement: Settlement Name = " + settlementName + ", Settlement Type = " + settlementTypeToString();
+    return "AddSettlement: Settlement Name = " + settlementName + ", Settlement Type = " + SettlementTypeToString();
+}
+string AddSettlement::description()const {//our method
+    return "settlement " + settlementName + " " + SettlementTypeToString() + " " + StatusToString();
 }
 
 
@@ -106,7 +134,9 @@ const string AddFacility::toString() const{
            ", EconomyImpact = " + std::to_string(economyScore) + 
            ", EnvironmentImpact = " + std::to_string(environmentScore);
 }
-
+string AddFacility::description()const {//our method
+    return "facility " + std::to_string(static_cast<int>(facilityCategory)) + " " + std::to_string(price) +" " + std::to_string(lifeQualityScore) +  " " +  std::to_string(economyScore) + " " + std::to_string(environmentScore) + " " + StatusToString();
+}
 
 //--------------------------------------------------------------------------------------
 //Constructor
@@ -123,6 +153,9 @@ void PrintPlanStatus::act(Simulation &simulation){
 PrintPlanStatus* PrintPlanStatus::clone() const{return new PrintPlanStatus(*this);}
 const string PrintPlanStatus::toString() const{
     return "PrintPlanStatus: PlanID = " + std::to_string(planId);
+}
+string PrintPlanStatus::description()const {//our method
+    return "planStatus " + std::to_string(planId) + " " + StatusToString();
 }
 
 
@@ -156,41 +189,68 @@ const string ChangePlanPolicy::toString() const{
            ", Previous Policy = " + previousPolicy + 
            ", New Policy = " + newPolicy;
 }
+string ChangePlanPolicy::description()const {//our method
+    return "changePolicy:: " + std::to_string(planId) + " " + newPolicy + " " + StatusToString();
+}
 
 //--------------------------------------------------------------------------------------
-class PrintActionsLog : public BaseAction {
-    public:
-        PrintActionsLog();
-        void act(Simulation &simulation) override;
-        PrintActionsLog *clone() const override;
-        const string toString() const override;
-    private:
-};
-//--------------------------------------------------------------------------------------
-class Close : public BaseAction {
-    public:
-        Close();
-        void act(Simulation &simulation) override;
-        Close *clone() const override;
-        const string toString() const override;
-    private:
-};
-//--------------------------------------------------------------------------------------
-class BackupSimulation : public BaseAction {
-    public:
-        BackupSimulation();
-        void act(Simulation &simulation) override;
-        BackupSimulation *clone() const override;
-        const string toString() const override;
-    private:
-};
+
+PrintActionsLog::PrintActionsLog(){}
+void PrintActionsLog::act(Simulation &simulation){
+    for (BaseAction* curr : simulation.getlog(){
+        cout << curr->description() << endl;
+    }
+    complete();
+}
+PrintActionsLog* PrintActionsLog::clone() const{return new PrintActionsLog(*this);}
+const string PrintActionsLog::toString() const{return description();}   
+string PrintActionsLog::description()const {//our method
+    return "log " + StatusToString();
+}
+
 
 //--------------------------------------------------------------------------------------
-class RestoreSimulation : public BaseAction {
-    public:
-        RestoreSimulation();
-        void act(Simulation &simulation) override;
-        RestoreSimulation *clone() const override;
-        const string toString() const override;
-    private:
-};
+
+Close::Close(){}
+void Close::act(Simulation &simulation){//צריך לשחרר זכרון פה?
+    simulation.close();
+}   
+Close* Close::clone() const{return new Close(*this);}
+const string Close::toString() const{return description();} 
+string Close::description()const {//our method
+    return "close " + StatusToString();
+}
+
+//--------------------------------------------------------------------------------------
+BackupSimulation::BackupSimulation(){}
+void BackupSimulation::act(Simulation &simulation) {
+    // if the backup has a simulation we need to delete it first
+    if (backup != nullptr) {
+        delete backup; 
+    }
+    backup = new Simulation(simulation);   
+    complete();
+}
+BackupSimulation* BackupSimulation::clone() const {return new BackupSimulation(*this);}
+const string BackupSimulation::toString() const{return description();}
+string BackupSimulation::description()const {//our method
+    return "backup " + StatusToString();
+}
+
+//--------------------------------------------------------------------------------------
+RestoreSimulation::RestoreSimulation(){}
+void RestoreSimulation::act(Simulation &simulation){
+    if (backup == nullptr) {
+        error("No backup available");
+    } else {
+        simulation = *backup;
+        complete();
+    }
+}
+RestoreSimulation* RestoreSimulation::clone() const{return new RestoreSimulation(*this);}
+const string RestoreSimulation::toString() const{return description();}
+string RestoreSimulation::description()const {//our method
+    return "restore " + StatusToString();
+}
+
+
