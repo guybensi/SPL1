@@ -1,11 +1,12 @@
 #include <vector>
 #include "Facility.h"
-#include "SelectionPolicy.h"
+#include "../include/SelectionPolicy.h"
 #include <algorithm>
 #include <initializer_list>
 #include <climits>
 #include <stdexcept>
 using std::vector;
+
 
 //Constructor
 NaiveSelection::NaiveSelection():lastSelectedIndex(-1){} 
@@ -78,7 +79,7 @@ string BalancedSelection::getName() const{return "bal";}//our method
 EconomySelection::EconomySelection():lastSelectedIndex(-1){}
 
 const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
-    for (int i = 1;i<=facilitiesOptions.size(); i++){
+    for (std::size_t i = 1;i<=facilitiesOptions.size(); i++){
         int releventIndex = (lastSelectedIndex + i) % facilitiesOptions.size();
         if (facilitiesOptions[releventIndex].getCategory() == FacilityCategory::ECONOMY) {
             lastSelectedIndex = releventIndex;
@@ -106,7 +107,7 @@ string EconomySelection::getName() const{return "eco";}//our method
 SustainabilitySelection::SustainabilitySelection():lastSelectedIndex(-1){}
 
 const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
-        for (int i = 1;i<=facilitiesOptions.size(); i++){
+        for (std::size_t i = 1;i<=facilitiesOptions.size(); i++){
         int releventIndex = (lastSelectedIndex + i) % facilitiesOptions.size();
         if (facilitiesOptions[releventIndex].getCategory() == FacilityCategory::ENVIRONMENT) {
             lastSelectedIndex = releventIndex;

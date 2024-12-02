@@ -130,7 +130,12 @@ void Plan::printStatus(){
 const vector<Facility*>& Plan::getFacilities() const{return facilities;}
 
 void Plan::addFacility(Facility* facility){
-    facilities.push_back(facility);
+    if(facility->getStatus() == FacilityStatus::OPERATIONAL){
+            facilities.push_back(facility);
+    }
+    else{
+        underConstruction.push_back(facility);
+    }  
 }
 
 const string Plan::toString() const {

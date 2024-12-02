@@ -119,7 +119,7 @@ string AddSettlement::description()const {//our method
 AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
         facilityName(facilityName), facilityCategory(facilityCategory), price(price),lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(environmentScore){}
 void AddFacility::act(Simulation &simulation){
-    FacilityType newFacility = FacilityType(facilityName, facilityCategory, price, lifeQualityScore, economyScore, environmentScore);
+    FacilityType newFacility(facilityName, facilityCategory, price, lifeQualityScore, economyScore, environmentScore);
     if(!simulation.addFacility(newFacility)){
         error("Facility: " + facilityName + "already exists");
         return;
