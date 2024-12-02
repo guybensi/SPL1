@@ -12,28 +12,32 @@ class SelectionPolicy;
 
 class Simulation {
     public:
-        Simulation(const string &configFilePath);//new method******
+        Simulation(const string &configFilePath);
         Simulation(const Simulation &other);// Copy Constructor
         Simulation& operator=(const Simulation &other);// Copy Assignment Operator
-        void start();// ------------
-        void addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy);//********updated function
-        void addAction(BaseAction *action);// ------------
-        bool addSettlement(Settlement *settlement);//********updated function
-        bool addFacility(FacilityType facility);//********updated function
+        Simulation(Simulation &&other) = default; // Move Constructor
+        Simulation& operator=(Simulation &&other) = default; // Move Assignment Operator
+        void start();
+        void addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy);
+        void addAction(BaseAction *action);
+        bool addSettlement(Settlement *settlement);
+        bool addFacility(FacilityType facility);
         bool isFacilityExists(const string &facilityName);//our method
         bool isSettlementExists(const string &settlementName);
-        Settlement *getSettlement(const string &settlementName);//********updated function
-        Plan &getPlan(const int planID);//********updated function
-        int getplanCounter();//new method******
-        void step();//new method******
-        void close();//new method******
-        void open();//new method******
+        Settlement *getSettlement(const string &settlementName);
+        vector<BaseAction*>& getlog();//our method
+        Plan &getPlan(const int planID);
+        int getplanCounter();
+        void step();
+        void close();
+        void open();
+        SelectionPolicy* createSelectionPolicy(const string& selectionPolicyType);
         ~Simulation();// Destructor
 
     private:
         bool isRunning;
         int planCounter; //For assigning unique plan IDs
-        vector<BaseAction*> actionsLog;// לא נגענו בזה!!!
+        vector<BaseAction*> actionsLog;
         vector<Plan> plans;
         vector<Settlement*> settlements;
         vector<FacilityType> facilitiesOptions;

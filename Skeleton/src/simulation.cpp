@@ -5,10 +5,14 @@
 #include "Plan.h"
 #include "Settlement.h"
 #include "Simulation.h"
+#include "Action.h"
 #include <bits/algorithmfwd.h>
 #include "Auxiliary.h"
+#include <iostream>
+using namespace std;
 using std::string;
 using std::vector;
+#include <fstream>
 
 //Constructor
 Simulation::Simulation(const string &configFilePath) : isRunning(false), planCounter(0){
@@ -85,13 +89,168 @@ Simulation& Simulation::operator=(const Simulation &other){
     } 
 }
 
-void Simulation::start();// צריך עדיין לממש
+void Simulation::start() {
+    open();
+    cout << "The simulation has atarted" << endl;
+    string line;
+    while (isRunning) {
+        //first command
+        cout << "Enter command: ";
+        std::getline(cin, line);
+        
+        // using the given class
+        vector<string> arguments = Auxiliary::parseArguments(line);
+        if (arguments.empty()) continue;
+        //Simulate Step
+        if (arguments[0] == "step"){
+            if (arguments.size() != 2){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            int numOfSteps = std::stoi(arguments[1]);
+            SimulateStep* newAction = new SimulateStep(numOfSteps);
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //Add plan
+        if (arguments[0] == "plan"){
+            if (arguments.size() != 3){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            AddPlan* newAction = new AddPlan(arguments[1], arguments[2]);
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //Add settlement
+        if (arguments[0] == "settlement"){
+            if (arguments.size() != 3){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            const int type = std::stoi(arguments[2]);
+            SettlementType currType;
+            switch (type){
+                case 0:
+                    currType = SettlementType::VILLAGE;
+                    break;
+                case 1:
+                    currType = SettlementType::CITY;
+                    break;
+                case 2:
+                    currType = SettlementType::METROPOLIS;
+                    break;
+            }
+            AddSettlement* newAction = new AddSettlement(arguments[1], currType);
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        
+        //Add facility
+        else if (arguments[0] == "facility") {
+            if (arguments.size() != 7) {
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            string name = arguments[1];
+            const int givenCategory = std::stoi(arguments[2]);
+            FacilityCategory category;
+            switch (givenCategory){
+                case 0:
+                    category = FacilityCategory::LIFE_QUALITY;
+                    break;
+                case 1:
+                    category = FacilityCategory::ECONOMY;
+                    break;
+                case 2:
+                    category = FacilityCategory::ENVIRONMENT;
+                    break;
+            }
+            int price = std::stoi(arguments[3]);
+            int lifeQualityScore = std::stoi(arguments[4]);
+            int ecoScore = std::stoi(arguments[5]);
+            int envScore = std::stoi(arguments[6]);
+            AddFacility* newAction = new AddFacility(name, category, price, lifeQualityScore, ecoScore, envScore);
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //print plan status
+        if (arguments[0] == "planStatus"){
+            if (arguments.size() != 2){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            int id = std::stoi(arguments[1]);
+            PrintPlanStatus* newAction = new PrintPlanStatus(id);
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //Change Plan Policy
+        if (arguments[0] == "changePolicy"){
+            if (arguments.size() != 3){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            int id = std::stoi(arguments[1]);
+            ChangePlanPolicy* newAction = new ChangePlanPolicy(id, arguments[2]);
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //Print Actions Log
+        if (arguments[0] == "log"){
+            if (arguments.size() != 1){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            PrintActionsLog* newAction = new PrintActionsLog();
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //Close
+        if (arguments[0] == "close"){
+            if (arguments.size() != 1){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            Close* newAction = new Close();
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //Backup Simulation
+        if (arguments[0] == "backup"){
+            if (arguments.size() != 1){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            BackupSimulation* newAction = new BackupSimulation();
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //RestoreSimulation
+        if (arguments[0] == "restore"){
+            if (arguments.size() != 1){
+                cout << "Invalid action" << endl;
+                continue;
+            }
+            RestoreSimulation* newAction = new RestoreSimulation();
+            newAction->act(*this);
+            addAction(newAction);
+        }
+        //unknown command
+        else {
+            cout << "Unknown command." << endl;
+        }
+    }
+}
+
 
 void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){
     plans.push_back(Plan(planCounter++, *settlement, selectionPolicy, facilitiesOptions));
 }
 
-void Simulation::addAction(BaseAction *action);// צריך עדיין לממש
+void Simulation::addAction(BaseAction *action){
+    actionsLog.push_back(action);
+}
 
 bool Simulation::addSettlement(Settlement *settlement){
     if (isSettlementExists(settlement->getName())){return false;}
@@ -119,17 +278,18 @@ bool Simulation::isSettlementExists(const string &settlementName){
 }
 
 Settlement* Simulation::getSettlement(const string &settlementName){
-    for (const Settlement* curr : settlements){
+    for (Settlement* curr : settlements){
         if (curr->getName() == settlementName){return curr;}
     }
     return nullptr;
 }
 
+vector<BaseAction*>& Simulation::getlog(){return actionsLog;}//our method
+
 Plan& Simulation::getPlan(const int planID){
     for (Plan& curr : plans){
         if (curr.getId() == planID){ return curr;}
     }
-
 }
 
 int Simulation::getplanCounter(){return planCounter;}//new method******
@@ -145,16 +305,37 @@ void Simulation::close(){
         cout << curr.toString() << '\n' ;
     }
     isRunning = false;
+    //צריך לשחרר זכרון פה?
 }
 
 void Simulation::open(){isRunning = true;}
+
+
+SelectionPolicy* Simulation::createSelectionPolicy(const string& selectionPolicyType){//new method******
+    SelectionPolicy* policy = nullptr;
+    if (selectionPolicyType == "eco") {
+        policy = new EconomySelection();
+    } else if (selectionPolicyType == "bal") {
+        policy = new BalancedSelection(0, 0, 0);
+    } else if (selectionPolicyType == "env") {
+        policy = new SustainabilitySelection();
+    } else if (selectionPolicyType == "nve") {
+        policy = new NaiveSelection();
+    } else {
+        return nullptr;
+    }
+    return policy;
+}
+
 
 // Destructor
 Simulation:: ~Simulation(){
     for (BaseAction* act : actionsLog){
         delete act;
     }
+    actionsLog.clear();
     for (Settlement *sett : settlements){
         delete sett;
     }
+    settlements.clear();
 }

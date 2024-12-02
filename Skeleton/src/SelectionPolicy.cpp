@@ -7,21 +7,6 @@
 #include <stdexcept>
 using std::vector;
 
-/*SelectionPolicy
-SelectionPolicy* SelectionPolicy::createSelectionPolicy(const string& selectionPolicyType){//new method******
-    SelectionPolicy* policy = nullptr;
-    if (selectionPolicyType == "eco") {
-        policy = new EconomySelection();
-    } else if (selectionPolicyType == "bal") {
-        policy = new BalancedSelection(0, 0, 0);
-    } else if (selectionPolicyType == "sus") {
-        policy = new SustainabilitySelection();
-    } else {
-        return nullptr;
-    }
-    return policy;// למה לא פשוט להחזיר פוליסה
-}
-*/
 //Constructor
 NaiveSelection::NaiveSelection():lastSelectedIndex(-1){} 
 
@@ -40,6 +25,7 @@ const string NaiveSelection ::toString() const{
  NaiveSelection* NaiveSelection ::clone() const{
     return new NaiveSelection(*this); 
 }
+string NaiveSelection::getName() const{return "nve";}//our method
 
 
 
@@ -60,9 +46,9 @@ const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>
             diff = distancecheck;
         } 
     }
-    LifeQualityScore = LifeQualityScore + ans->getLifeQualityScore();
-    EconomyScore = EconomyScore + ans->getEconomyScore();
-    EnvironmentScore = EnvironmentScore + ans->getEnvironmentScore();
+    LifeQualityScore += ans->getLifeQualityScore();
+    EconomyScore += ans->getEconomyScore();
+    EnvironmentScore += ans->getEnvironmentScore();
     return *ans;//לוודא טיפוס החזרה? צריך למחוק אותו? 
 }
 
@@ -84,6 +70,7 @@ const string BalancedSelection::toString() const {
 BalancedSelection * BalancedSelection :: clone() const{
     return new BalancedSelection(*this);
 }
+string BalancedSelection::getName() const{return "bal";}//our method
 
 
 
@@ -109,6 +96,7 @@ const string EconomySelection::toString() const {
 EconomySelection * EconomySelection::clone() const{
     return new EconomySelection(*this); 
 }
+string EconomySelection::getName() const{return "eco";}//our method
 
 
 
@@ -135,5 +123,6 @@ const string SustainabilitySelection::toString() const{
 SustainabilitySelection *SustainabilitySelection::clone() const{
     return new SustainabilitySelection(*this);
 }
+string SustainabilitySelection::getName() const{return "env";}//our method
 
 
