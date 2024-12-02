@@ -12,6 +12,7 @@
 using namespace std;
 using std::string;
 using std::vector;
+#include <fstream>
 
 //Constructor
 Simulation::Simulation(const string &configFilePath) : isRunning(false), planCounter(0){
@@ -277,7 +278,7 @@ bool Simulation::isSettlementExists(const string &settlementName){
 }
 
 Settlement* Simulation::getSettlement(const string &settlementName){
-    for (const Settlement* curr : settlements){
+    for (Settlement* curr : settlements){
         if (curr->getName() == settlementName){return curr;}
     }
     return nullptr;

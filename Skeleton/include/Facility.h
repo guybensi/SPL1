@@ -12,7 +12,7 @@ enum class FacilityStatus {
 enum class FacilityCategory {
     LIFE_QUALITY,
     ECONOMY,
-    ENVIRONMENT,
+    ENVIRONMENT, 
 };
 
 

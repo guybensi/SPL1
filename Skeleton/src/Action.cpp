@@ -3,6 +3,7 @@
 #include <vector>
 #include "Simulation.h"
 using namespace std;
+#include <iostream>
 enum class SettlementType;
 enum class FacilityCategory;
 extern Simulation* backup;
@@ -23,7 +24,7 @@ void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
     this->errorMsg = errorMsg; 
 }
-const string BaseAction::&getErrorMsg() const{return errorMsg;}
+const string& BaseAction::getErrorMsg() const{return errorMsg;}
 
 
 
@@ -118,7 +119,7 @@ string AddSettlement::description()const {//our method
 AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
         facilityName(facilityName), facilityCategory(facilityCategory), price(price),lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(environmentScore){}
 void AddFacility::act(Simulation &simulation){
-    FacilityType& newFacility = FacilityType(facilityName, facilityCategory, price, lifeQualityScore, economyScore, environmentScore);
+    FacilityType newFacility = FacilityType(facilityName, facilityCategory, price, lifeQualityScore, economyScore, environmentScore);
     if(!simulation.addFacility(newFacility)){
         error("Facility: " + facilityName + "already exists");
         return;
@@ -197,7 +198,7 @@ string ChangePlanPolicy::description()const {//our method
 
 PrintActionsLog::PrintActionsLog(){}
 void PrintActionsLog::act(Simulation &simulation){
-    for (BaseAction* curr : simulation.getlog(){
+    for (BaseAction* curr : simulation.getlog()){
         cout << curr->description() << endl;
     }
     complete();
