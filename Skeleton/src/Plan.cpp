@@ -181,8 +181,9 @@ void Plan::step(){
     // doing a step for all the facilities
     for (int i = 0; i < underConstruction.size();){
         Facility* currFacility = underConstruction[i];
-        if ((currFacility->step()) == FacilityStatus::OPERATIONAL){//זה לא נכנס אף פעם משום מש
-            cout << "the facility is operational" << endl;
+        FacilityStatus currStat = currFacility->step();
+        if (currStat == FacilityStatus::OPERATIONAL){//זה לא נכנס אף פעם משום מש
+            cout << "the facility is operational" << endl; 
             addFacility(currFacility);
             scoreUpdate(currFacility);
             underConstruction.erase(underConstruction.begin() + i);
