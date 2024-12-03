@@ -16,8 +16,8 @@ class Plan {
         Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions);
         Plan(const Plan &other);//Copy Constructor
         Plan& operator=(const Plan &other);//Copy Assignment Operator      
-        Plan(Plan &&other) = default;// Move Constructor
-        Plan& operator=(Plan &&other) = default;// Move Assignment Operator
+        Plan(Plan &&other);// Move Constructor
+        Plan& operator=(Plan &&other);// Move Assignment Operator
         const int getlifeQualityScore() const;
         const int getEconomyScore() const;
         const int getEnvironmentScore() const;

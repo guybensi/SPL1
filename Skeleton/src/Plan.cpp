@@ -25,7 +25,38 @@ Plan::Plan(const Plan &other):Plan(other.plan_id, other.settlement, other.select
         addFacility(new Facility (*facility));
     }  
 }
+// Copy Assignment Operator
+Plan& Plan::operator=(const Plan &other){return *this;}
+// move constractor
+Plan::Plan(Plan &&other)
+: Plan(other.plan_id, other.settlement, other.selectionPolicy, other.facilityOptions)
+{
+    status = other.status;
+    life_quality_score = other.getlifeQualityScore();
+    economy_score = other.getEconomyScore();
+    environment_score = other.getEnvironmentScore();
 
+    // Deep copy of the Facility lists (shallow copy of the pointers will lead to issues)
+    // Make sure to copy the actual Facility objects and not just the pointers
+    facilities.clear();
+    for (Facility* facility : other.facilities) {
+        addFacility(facility);
+    }
+
+    underConstruction.clear();
+    for (Facility* facility : other.underConstruction) {
+        addFacility(facility);
+    }
+
+    // Now reset other object's data after move
+    other.facilities.clear(); 
+    other.underConstruction.clear();
+    other.selectionPolicy = nullptr;  // Since we don't own it, make it nullptr
+}
+
+Plan& Plan::operator=(Plan &&other){return *this;}// Move Assignment Operator
+
+/*
 // Copy Assignment Operator
 Plan& Plan::operator=(const Plan &other) {
     if (this != &other) {
@@ -55,7 +86,7 @@ Plan& Plan::operator=(const Plan &other) {
     }
     return *this;
 }
-
+*/
 
 
 const int Plan::getlifeQualityScore() const {return life_quality_score;}
@@ -162,13 +193,12 @@ const string Plan::toString() const {
     }
     string result = "PlanID: " + std::to_string(plan_id) + "\n";
     if (status == PlanStatus::AVALIABLE) {
-        result += "Status: Available";
+        result = result +  "Status: Available" + "\n";
     } else {
-        result += "Status: Busy";
+        result = result + "Status: Busy" + "\n";
     }
     result += "SettlementName: " + settlement.getName() + "\n"; 
-    result += "PlanStatus: " + statusString + "\n";
-    result += "SelectionPolicy: " + selectionPolicy->toString() + "\n"; 
+    result += "SelectionPolicy: " + selectionPolicy->getName() + "\n"; 
     result += "LifeQualityScore: " + std::to_string(life_quality_score) + "\n";
     result += "EconomyScore: " + std::to_string(economy_score) + "\n";
     result += "EnvironmentScore: " + std::to_string(environment_score) + "\n";

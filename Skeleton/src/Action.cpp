@@ -23,6 +23,7 @@ void BaseAction::complete(){status = ActionStatus::COMPLETED;}
 void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
     this->errorMsg = errorMsg; 
+    cout << getErrorMsg() <<endl;
 }
 const string& BaseAction::getErrorMsg() const{return errorMsg;}
 
@@ -144,7 +145,7 @@ string AddFacility::description()const {//our method
 PrintPlanStatus::PrintPlanStatus(int planId):planId(planId){}
 void PrintPlanStatus::act(Simulation &simulation){
     if (planId < 0 || planId >= simulation.getplanCounter()) {//the id is not legal
-        error("Plan: " + std::to_string(planId) + "doesn't exist");
+        error("Plan: " + std::to_string(planId) + " "+ "doesn't exist");
         return; 
     }
     Plan& plan = simulation.getPlan(planId);  

@@ -39,7 +39,8 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
             int price = std::stoi(arguments[3]);
             int lifeQualityScore = std::stoi(arguments[4]);
             int ecoScore = std::stoi(arguments[5]);
-            int envScore = std::stoi(arguments[6]);  
+            int envScore = std::stoi(arguments[6]);
+            std::cout << "constractor " << std::endl;
             if(!addFacility(FacilityType(name, category, price, lifeQualityScore, ecoScore, envScore))){throw std::runtime_error("Invalid facility");}      
         }
         else if (arguments[0] == "plan"){//creating a new plan
@@ -113,7 +114,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //Add plan
-        if (arguments[0] == "plan"){
+        else if (arguments[0] == "plan"){
             if (arguments.size() != 3){
                 cout << "Invalid action" << endl;
                 continue;
@@ -123,7 +124,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //Add settlement
-        if (arguments[0] == "settlement"){
+        else if (arguments[0] == "settlement"){
             if (arguments.size() != 3){
                 cout << "Invalid action" << endl;
                 continue;
@@ -175,7 +176,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //print plan status
-        if (arguments[0] == "planStatus"){
+        else if (arguments[0] == "planStatus"){
             if (arguments.size() != 2){
                 cout << "Invalid action" << endl;
                 continue;
@@ -186,7 +187,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //Change Plan Policy
-        if (arguments[0] == "changePolicy"){
+        else if (arguments[0] == "changePolicy"){
             if (arguments.size() != 3){
                 cout << "Invalid action" << endl;
                 continue;
@@ -197,7 +198,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //Print Actions Log
-        if (arguments[0] == "log"){
+        else if (arguments[0] == "log"){
             if (arguments.size() != 1){
                 cout << "Invalid action" << endl;
                 continue;
@@ -207,7 +208,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //Close
-        if (arguments[0] == "close"){
+        else if (arguments[0] == "close"){
             if (arguments.size() != 1){
                 cout << "Invalid action" << endl;
                 continue;
@@ -217,7 +218,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //Backup Simulation
-        if (arguments[0] == "backup"){
+        else if (arguments[0] == "backup"){
             if (arguments.size() != 1){
                 cout << "Invalid action" << endl;
                 continue;
@@ -227,7 +228,7 @@ void Simulation::start() {
             addAction(newAction);
         }
         //RestoreSimulation
-        if (arguments[0] == "restore"){
+        else if (arguments[0] == "restore"){
             if (arguments.size() != 1){
                 cout << "Invalid action" << endl;
                 continue;
@@ -245,8 +246,8 @@ void Simulation::start() {
 
  
 void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){
-    planCounter++;
     plans.push_back(Plan(planCounter, *settlement, selectionPolicy, facilitiesOptions));
+    planCounter++;
 }
 
 void Simulation::addAction(BaseAction *action){
@@ -259,12 +260,15 @@ bool Simulation::addSettlement(Settlement *settlement){
     return true;
 }
 bool Simulation::addFacility(FacilityType facility){
+    std::cout << "add facility in simulation " << std::endl;
     if (isFacilityExists(facility.getName())){return false;}
     facilitiesOptions.push_back(facility);
+    std::cout << "push back " << std::endl;
     return true;
 }
 
 bool Simulation::isFacilityExists(const string &facilityName){
+    std::cout << "ais facility exists in simulation " << std::endl;
     for (const FacilityType curr : facilitiesOptions){
         if (curr.getName() == facilityName){return true;}
     }
