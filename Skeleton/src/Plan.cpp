@@ -25,8 +25,7 @@ Plan::Plan(const Plan &other):Plan(other.plan_id, other.settlement, other.select
         addFacility(new Facility (*facility));
     }  
 }
-// Copy Assignment Operator
-Plan& Plan::operator=(const Plan &other){return *this;}
+
 // move constractor
 Plan::Plan(Plan &&other)
 : Plan(other.plan_id, other.settlement, other.selectionPolicy, other.facilityOptions)
@@ -54,9 +53,39 @@ Plan::Plan(Plan &&other)
     other.selectionPolicy = nullptr;  // Since we don't own it, make it nullptr
 }
 
-Plan& Plan::operator=(Plan &&other){return *this;}// Move Assignment Operator
+// Move Assignment Operator
+Plan& Plan::operator=(Plan &&other) {
+    if (this != &other) {
+        plan_id = other.plan_id;
+        status = other.status;
+        life_quality_score = other.life_quality_score;
+        economy_score = other.economy_score;
+        environment_score = other.environment_score;
+        
+        if (selectionPolicy) {
+            delete selectionPolicy;
+        }
+        selectionPolicy = other.selectionPolicy;
+        other.selectionPolicy = nullptr;
 
-/*
+        facilities.clear();
+        for (Facility* facility : other.facilities) {
+            addFacility(facility);
+        }
+
+        underConstruction.clear();
+        for (Facility* facility : other.underConstruction) {
+            addFacility(facility);
+        }
+
+        other.facilities.clear();
+        other.underConstruction.clear();
+    }
+    return *this;
+}
+
+
+
 // Copy Assignment Operator
 Plan& Plan::operator=(const Plan &other) {
     if (this != &other) {
@@ -86,7 +115,6 @@ Plan& Plan::operator=(const Plan &other) {
     }
     return *this;
 }
-*/
 
 
 const int Plan::getlifeQualityScore() const {return life_quality_score;}
@@ -142,24 +170,27 @@ string Plan::getSelectionPolicy() const {//our method
 
 void Plan::step(){
     //as long as i can build more
+    cout << "step plan" << endl;
     while (status == PlanStatus::AVALIABLE){
         Facility *selectedFacility = new Facility(this->selectionPolicy->selectFacility(facilityOptions),this->settlement.getName());
-        underConstruction.push_back(selectedFacility);
+        addFacility(selectedFacility);
         if (underConstruction.size() == this->settlement.getLimit()){
             this->status = PlanStatus::BUSY; 
         }
     }
-    // diung a step for all the facilities
-    for (auto it = underConstruction.begin(); it != underConstruction.end(); ) {
-        (*it)->step(); 
-    //maybe the facility has finishes building
-        if ((*it)->getStatus() == FacilityStatus::OPERATIONAL) {
-            facilities.push_back(*it);  
-            it = underConstruction.erase(it); 
-            Plan::scoreUpdate(*it);
-        }else {++it;}          
+    // doing a step for all the facilities
+    for (int i = 0; i < underConstruction.size();){
+        Facility* currFacility = underConstruction[i];
+        if ((currFacility->step()) == FacilityStatus::OPERATIONAL){//זה לא נכנס אף פעם משום מש
+            cout << "the facility is operational" << endl;
+            addFacility(currFacility);
+            scoreUpdate(currFacility);
+            underConstruction.erase(underConstruction.begin() + i);
+        }
+        else{i++;}
+
     }
-    //maybe the plan can ve avalible
+    //maybe the plan can be avalible
     if (underConstruction.size() < this->settlement.getLimit()) {
         this->status = PlanStatus::AVALIABLE;
     }
@@ -175,10 +206,17 @@ const vector<Facility*>& Plan::getFacilities() const{return facilities;}
 void Plan::addFacility(Facility* facility){
     if(facility->getStatus() == FacilityStatus::OPERATIONAL){
             facilities.push_back(facility);
+            cout << "add facility to facilities" << endl;
     }
     else{
         underConstruction.push_back(facility);
+        cout << "add facility to under" << endl;
+        for (auto *facility : underConstruction){
+            cout << facility->getName() << endl;
+        }
+
     }  
+    
 }
 
 const string Plan::toString() const {
@@ -202,7 +240,14 @@ const string Plan::toString() const {
     result += "LifeQualityScore: " + std::to_string(life_quality_score) + "\n";
     result += "EconomyScore: " + std::to_string(economy_score) + "\n";
     result += "EnvironmentScore: " + std::to_string(environment_score) + "\n";
-    for (const Facility* facility : facilities) {
+    result += "Under Construction:";
+    result +=  "\n";
+    for (Facility* facility : underConstruction) {
+        result += "FacilityName: " + facility->toString() + "\n";
+    }
+    result += "\nFacilities:";
+    result += "\n";
+    for (Facility* facility : facilities) {
         result += "FacilityName: " + facility->toString() + "\n";
     }
     return result;
@@ -213,6 +258,7 @@ void Plan::scoreUpdate(Facility* facility) {// our method
     this->life_quality_score += facility->getLifeQualityScore();
     this->economy_score += facility->getEconomyScore();  
     this->environment_score += facility->getEnvironmentScore();  
+    cout << "score update plan" << endl;
 }
 
 const int Plan::getId(){return plan_id;}// our method

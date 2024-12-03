@@ -89,7 +89,7 @@ Simulation& Simulation::operator=(const Simulation &other){
         return *this;   
     } 
 }
-
+//--------------------------------------------------------------------------------------
 void Simulation::start() {
     open();
     cout << "The simulation has atarted" << endl;
@@ -104,6 +104,7 @@ void Simulation::start() {
         if (arguments.empty()) continue;
         //Simulate Step
         if (arguments[0] == "step"){
+            cout << "step in start simulation" << endl;
             if (arguments.size() != 2){
                 cout << "Invalid action" << endl;
                 continue;
@@ -244,21 +245,22 @@ void Simulation::start() {
     }
 }
 
- 
+ //--------------------------------------------------------------------------------------
 void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){
     plans.push_back(Plan(planCounter, *settlement, selectionPolicy, facilitiesOptions));
     planCounter++;
 }
-
+//--------------------------------------------------------------------------------------
 void Simulation::addAction(BaseAction *action){
     actionsLog.push_back(action);
 }
-
+//--------------------------------------------------------------------------------------
 bool Simulation::addSettlement(Settlement *settlement){
     if (isSettlementExists(settlement->getName())){return false;}
     settlements.push_back(settlement);
     return true;
 }
+//--------------------------------------------------------------------------------------
 bool Simulation::addFacility(FacilityType facility){
     std::cout << "add facility in simulation " << std::endl;
     if (isFacilityExists(facility.getName())){return false;}
@@ -266,7 +268,7 @@ bool Simulation::addFacility(FacilityType facility){
     std::cout << "push back " << std::endl;
     return true;
 }
-
+//--------------------------------------------------------------------------------------
 bool Simulation::isFacilityExists(const string &facilityName){
     std::cout << "ais facility exists in simulation " << std::endl;
     for (const FacilityType curr : facilitiesOptions){
@@ -274,37 +276,38 @@ bool Simulation::isFacilityExists(const string &facilityName){
     }
     return false; 
 }
-
+//--------------------------------------------------------------------------------------
 bool Simulation::isSettlementExists(const string &settlementName){
     for (const Settlement* curr : settlements){
         if (curr->getName() == settlementName){return true;}
     }
     return false; 
 }
-
+//--------------------------------------------------------------------------------------
 Settlement* Simulation::getSettlement(const string &settlementName){
     for (Settlement* curr : settlements){
         if (curr->getName() == settlementName){return curr;}
     }
     return nullptr;
 }
-
+//--------------------------------------------------------------------------------------
 vector<BaseAction*>& Simulation::getlog(){return actionsLog;}//our method
-
+//--------------------------------------------------------------------------------------
 Plan& Simulation::getPlan(const int planID){
     for (Plan& curr : plans){
         if (curr.getId() == planID){ return curr;}
     }
 }
-
+//--------------------------------------------------------------------------------------
 int Simulation::getplanCounter(){return planCounter;}//new method******
-
+//--------------------------------------------------------------------------------------
 void Simulation::step(){
+    cout << "step in simulation" << endl;
     for (Plan p : plans){
         p.step();
     }
 }
-
+//--------------------------------------------------------------------------------------
 void Simulation::close(){
     for (const Plan& curr : plans){
         cout << curr.toString() << '\n' ;
@@ -312,10 +315,10 @@ void Simulation::close(){
     isRunning = false;
     //צריך לשחרר זכרון פה?
 }
-
+//--------------------------------------------------------------------------------------
 void Simulation::open(){isRunning = true;}
 
-
+//--------------------------------------------------------------------------------------
 SelectionPolicy* Simulation::createSelectionPolicy(const string& selectionPolicyType){//new method******
     SelectionPolicy* policy = nullptr;
     if (selectionPolicyType == "eco") {
@@ -332,7 +335,7 @@ SelectionPolicy* Simulation::createSelectionPolicy(const string& selectionPolicy
     return policy;
 }
 
-
+//--------------------------------------------------------------------------------------
 // Destructor
 Simulation:: ~Simulation(){
     for (BaseAction* act : actionsLog){

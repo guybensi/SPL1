@@ -2,8 +2,10 @@
 #include <string>
 #include <vector>
 #include "Facility.h"
+#include <iostream>
 using std::string;
 using std::vector;
+using namespace std;
 
 //Constructor
 FacilityType ::FacilityType(const string &name, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
@@ -28,7 +30,7 @@ FacilityCategory FacilityType ::getCategory() const {return category;}
 FacilityType ::~FacilityType(){}//destcractor
 
 
-
+//--------------------------------------------------------------------------------------
 
 //Constructor
 Facility::Facility(const string &name, const string &settlementName, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score)
@@ -50,13 +52,13 @@ const string & Facility ::getSettlementName() const {return settlementName;}
 const int Facility ::getTimeLeft() const {return timeLeft;}
 
 FacilityStatus Facility ::step(){
-    if(status == FacilityStatus::OPERATIONAL){
-        return getStatus();
+    if (timeLeft > 0) {
+        timeLeft--;
     }
-    timeLeft--;
     if (timeLeft == 0){
         setStatus(FacilityStatus::OPERATIONAL);
-        }
+    }
+    cout << "step facility" << endl;
     return getStatus();
 }
 

@@ -125,7 +125,7 @@ void AddFacility::act(Simulation &simulation){
         error("Facility: " + facilityName + "already exists");
         return;
     }
-    complete();
+    complete(); 
 }
 AddFacility* AddFacility::clone() const{return new AddFacility(*this);}
 const string AddFacility::toString() const{

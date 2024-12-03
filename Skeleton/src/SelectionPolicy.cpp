@@ -5,6 +5,8 @@
 #include <initializer_list>
 #include <climits>
 #include <stdexcept>
+#include <iostream>
+using namespace std;
 using std::vector;
 
 
@@ -30,7 +32,7 @@ string NaiveSelection::getName() const{return "nve";}//our method
 
 
 
-
+//--------------------------------------------------------------------------------------
 
 //Constructor
 BalancedSelection::BalancedSelection(int LifeQualityScore, int EconomyScore, int EnvironmentScore):LifeQualityScore(LifeQualityScore), EconomyScore(EconomyScore), EnvironmentScore(EnvironmentScore){}
@@ -73,12 +75,13 @@ BalancedSelection * BalancedSelection :: clone() const{
 }
 string BalancedSelection::getName() const{return "bal";}//our method
 
-
+//--------------------------------------------------------------------------------------
 
 //Constructor
 EconomySelection::EconomySelection():lastSelectedIndex(-1){}
 
 const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
+    cout << "select eco" << endl;
     for (std::size_t i = 1;i<=facilitiesOptions.size(); i++){
         int releventIndex = (lastSelectedIndex + i) % facilitiesOptions.size();
         if (facilitiesOptions[releventIndex].getCategory() == FacilityCategory::ECONOMY) {
@@ -101,7 +104,7 @@ string EconomySelection::getName() const{return "eco";}//our method
 
 
 
-
+//--------------------------------------------------------------------------------------
 
 //Constructor
 SustainabilitySelection::SustainabilitySelection():lastSelectedIndex(-1){}
