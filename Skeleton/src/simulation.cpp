@@ -243,9 +243,10 @@ void Simulation::start() {
     }
 }
 
-
+ 
 void Simulation::addPlan(const Settlement *settlement, SelectionPolicy *selectionPolicy){
-    plans.push_back(Plan(planCounter++, *settlement, selectionPolicy, facilitiesOptions));
+    planCounter++;
+    plans.push_back(Plan(planCounter, *settlement, selectionPolicy, facilitiesOptions));
 }
 
 void Simulation::addAction(BaseAction *action){

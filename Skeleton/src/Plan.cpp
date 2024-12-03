@@ -13,12 +13,16 @@ Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *sele
 plan_id(planId), settlement(settlement), selectionPolicy(selectionPolicy), facilityOptions(facilityOptions), status(PlanStatus::AVALIABLE), life_quality_score(0), economy_score(0), environment_score(0){}
 
 // Copy Constructor
-Plan::Plan(const Plan &other):plan_id(other.plan_id), facilityOptions(other.facilityOptions), status(other.status), life_quality_score(other.life_quality_score), economy_score(other.economy_score), environment_score(other.environment_score), settlement(other.settlement), selectionPolicy(other.selectionPolicy->clone()) {
+Plan::Plan(const Plan &other):Plan(other.plan_id, other.settlement, other.selectionPolicy->clone(), other.facilityOptions){
+    status = other.status;
+    life_quality_score = other.getlifeQualityScore();
+    economy_score = other.getEconomyScore();
+    environment_score = other.getEnvironmentScore();
     for (Facility* facility : other.underConstruction) {
-        underConstruction.push_back(new Facility (*facility));
+        addFacility(new Facility (*facility));
     }
     for (Facility* facility : other.facilities) {
-        facilities.push_back(new Facility (*facility));
+        addFacility(new Facility (*facility));
     }  
 }
 
@@ -30,12 +34,14 @@ Plan& Plan::operator=(const Plan &other) {
         life_quality_score = other.life_quality_score;
         economy_score = other.economy_score;
         environment_score = other.environment_score;
-        delete selectionPolicy;
-        selectionPolicy = other.selectionPolicy->clone();  
+        if (selectionPolicy) {
+            delete selectionPolicy;
+        }
+        selectionPolicy = (other.selectionPolicy != nullptr) ? other.selectionPolicy->clone() : nullptr;
         for (Facility* facility : underConstruction) {
             delete facility;
         }
-        underConstruction.clear(); 
+        underConstruction.clear();
         for (Facility* facility : other.underConstruction) {
             underConstruction.push_back(new Facility(*facility));
         }
@@ -46,9 +52,10 @@ Plan& Plan::operator=(const Plan &other) {
         for (Facility* facility : other.facilities) {
             facilities.push_back(new Facility(*facility));
         }
-    } 
-    return *this;   
+    }
+    return *this;
 }
+
 
 
 const int Plan::getlifeQualityScore() const {return life_quality_score;}
@@ -57,7 +64,12 @@ const int Plan::getEconomyScore() const {return economy_score;}
 
 const int Plan::getEnvironmentScore() const {return environment_score;}
 
-void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {this->selectionPolicy = selectionPolicy;}
+void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {
+    if (this->selectionPolicy != selectionPolicy) {
+        delete this->selectionPolicy;
+        this->selectionPolicy = selectionPolicy;
+    }
+}
 
 bool Plan::changePolicy(const string newPolicy){//our method
     if (newPolicy == "eco") {
@@ -177,7 +189,9 @@ const int Plan::getId(){return plan_id;}// our method
 
 // Destructor
 Plan::~Plan() {
-    delete selectionPolicy;
+    if (selectionPolicy != nullptr) {
+        delete selectionPolicy;
+    }
     for (Facility* facility : underConstruction) {
         delete facility;
     }

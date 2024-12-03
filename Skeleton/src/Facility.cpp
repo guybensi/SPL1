@@ -9,7 +9,9 @@ using std::vector;
 FacilityType ::FacilityType(const string &name, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
  name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score){}
 
- FacilityType& FacilityType::operator=(const FacilityType &other){return *this;}
+FacilityType ::FacilityType(const FacilityType&other):FacilityType(other.name, other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score){}//copy constractor
+
+FacilityType& FacilityType::operator=(const FacilityType &other){return *this;}
 
 const string & FacilityType ::getName() const {return name;}
 
@@ -22,6 +24,8 @@ int FacilityType ::getEnvironmentScore() const {return environment_score;}
 int FacilityType ::getEconomyScore() const {return economy_score;}
 
 FacilityCategory FacilityType ::getCategory() const {return category;}
+
+FacilityType ::~FacilityType(){}//destcractor
 
 
 
@@ -36,6 +40,10 @@ Facility::Facility(const string &name, const string &settlementName, const Facil
 
 Facility ::Facility(const FacilityType &type, const string &settlementName):
 FacilityType(type), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price){}
+
+Facility ::Facility(const Facility &other): Facility(other.name, other.getSettlementName(), other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score){}//copy constractor
+
+Facility& Facility ::operator=(const Facility &other){return *this;}//copy assignment operator
 
 const string & Facility ::getSettlementName() const {return settlementName;}
 
@@ -97,4 +105,6 @@ const string Facility ::toString() const{
        "Environment Score: " + std::to_string(this->environment_score) + " | " +
        "Time Left: " + std::to_string(this->timeLeft);
 }
+
+Facility::~Facility(){};//destcractor
 
