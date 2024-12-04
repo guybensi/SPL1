@@ -12,7 +12,7 @@ FacilityType ::FacilityType(const string &name, const FacilityCategory category,
  name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score){}
 //Copy Constructor
 FacilityType ::FacilityType(const FacilityType&other):FacilityType(other.name, other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score){}//copy constractor
-
+//Copy Assignment operator
 FacilityType& FacilityType::operator=(const FacilityType &other){return *this;}
 
 const string & FacilityType ::getName() const {return name;}
@@ -44,7 +44,7 @@ Facility ::Facility(const FacilityType &type, const string &settlementName):
 FacilityType(type), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price){}
 //Copy Constructor
 Facility ::Facility(const Facility &other): Facility(other.name, other.getSettlementName(), other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score){}//copy constractor
-
+//Copy Assignment operator
 Facility& Facility ::operator=(const Facility &other){return *this;}//copy assignment operator
 
 const string & Facility ::getSettlementName() const {return settlementName;}

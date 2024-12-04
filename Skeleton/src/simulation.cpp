@@ -15,7 +15,7 @@ using std::vector;
 #include <fstream>
 
 //Constructor
-Simulation::Simulation(const string &configFilePath) : isRunning(false), planCounter(0){
+Simulation::Simulation(const string &configFilePath):isRunning(false), planCounter(0), actionsLog(), plans(), settlements(), facilitiesOptions(){
     // reading from the file
     std::ifstream file(configFilePath);
     if (!file.is_open()) {throw std::runtime_error("Failed to open config file.");}
@@ -55,7 +55,7 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
 }
 
 // Copy Constructor
-Simulation::Simulation(const Simulation &other):isRunning(other.isRunning), planCounter(other.planCounter), plans(other.plans), facilitiesOptions(other.facilitiesOptions){ 
+Simulation::Simulation(const Simulation &other):isRunning(other.isRunning), planCounter(other.planCounter),actionsLog(), plans(),settlements(), facilitiesOptions(other.facilitiesOptions){ 
     for (BaseAction* action : other.actionsLog) {
         actionsLog.push_back(action->clone());
     }
@@ -93,14 +93,15 @@ Simulation& Simulation::operator=(const Simulation &other){
         for (Settlement* currSet : other.settlements) {
             settlements.push_back(new Settlement(*currSet));
         } 
+        plans.clear();
         for(Plan plan : other.plans){
             string settlementName = plan.getSettlement().getName();
             Settlement *newSettelemnet = getSettlement(settlementName); 
             Plan newPlan = Plan(*newSettelemnet,plan);
             plans.push_back(newPlan);
-        }   
-        return *this;   
+        }     
     } 
+    return *this;
 }
 //--------------------------------------------------------------------------------------
 void Simulation::start() {
@@ -303,9 +304,7 @@ Settlement* Simulation::getSettlement(const string &settlementName){
 vector<BaseAction*>& Simulation::getlog(){return actionsLog;}//our method
 //--------------------------------------------------------------------------------------
 Plan& Simulation::getPlan(const int planID){
-    for (Plan& curr : plans){
-        if (curr.getId() == planID){ return curr;}
-    }
+    return plans[planID];
 }
 //--------------------------------------------------------------------------------------
 int Simulation::getplanCounter(){return planCounter;}//our method

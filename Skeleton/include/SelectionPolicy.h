@@ -9,8 +9,7 @@ class SelectionPolicy {
         virtual const string toString() const = 0;
         virtual SelectionPolicy* clone() const = 0;
         virtual string getName() const = 0;
-        virtual ~SelectionPolicy()= default;/////////////הוספתי את המימוש גם בcpp 
-        //static SelectionPolicy* createSelectionPolicy(const string& selectionPolicyType){//new method******
+        virtual ~SelectionPolicy()= default; //Destructor
 };
 
 class NaiveSelection: public SelectionPolicy {

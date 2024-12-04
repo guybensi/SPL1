@@ -10,16 +10,8 @@ using std::vector;
 
 //Constructor
 Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions):
-plan_id(planId), settlement(settlement), selectionPolicy(selectionPolicy), facilityOptions(facilityOptions), status(PlanStatus::AVALIABLE), life_quality_score(0), economy_score(0), environment_score(0){}
+plan_id(planId), settlement(settlement), selectionPolicy(selectionPolicy), status(PlanStatus::AVALIABLE) , facilities(), underConstruction(),facilityOptions(facilityOptions), life_quality_score(0), economy_score(0), environment_score(0){}
 
-
-//Copy Constructor for copy simulation
-Plan::Plan(const Settlement &settlement, const Plan &other):Plan(other.plan_id, settlement, other.selectionPolicy->clone(), other.facilityOptions){
-    status = other.status;
-    life_quality_score = other.getlifeQualityScore();
-    economy_score = other.getEconomyScore();
-    environment_score = other.getEnvironmentScore();
-}
 // Copy Constructor
 Plan::Plan(const Plan &other):Plan(other.plan_id, other.settlement, other.selectionPolicy->clone(), other.facilityOptions){
     status = other.status;
@@ -32,6 +24,44 @@ Plan::Plan(const Plan &other):Plan(other.plan_id, other.settlement, other.select
     for (Facility* facility : other.facilities) {
         addFacility(new Facility (*facility));
     }  
+}
+
+//Copy Constructor for copy simulation
+Plan::Plan(const Settlement &settlement, const Plan &other):Plan(other.plan_id, settlement, other.selectionPolicy->clone(), other.facilityOptions){
+    status = other.status;
+    life_quality_score = other.getlifeQualityScore();
+    economy_score = other.getEconomyScore();
+    environment_score = other.getEnvironmentScore();
+}
+
+// Copy Assignment Operator
+Plan& Plan::operator=(const Plan &other) {
+    if (this != &other) {
+        plan_id = other.plan_id;
+        status = other.status;
+        life_quality_score = other.life_quality_score;
+        economy_score = other.economy_score;
+        environment_score = other.environment_score;
+        if (selectionPolicy) {
+            delete selectionPolicy;
+        }
+        selectionPolicy = (other.selectionPolicy != nullptr) ? other.selectionPolicy->clone() : nullptr;
+        for (Facility* facility : underConstruction) {
+            delete facility;
+        }
+        underConstruction.clear();
+        for (Facility* facility : other.underConstruction) {
+            underConstruction.push_back(new Facility(*facility));
+        }
+        for (Facility* facility : facilities) {
+            delete facility;
+        }
+        facilities.clear();
+        for (Facility* facility : other.facilities) {
+            facilities.push_back(new Facility(*facility));
+        }
+    }
+    return *this;
 }
 
 // move constractor
@@ -92,39 +122,6 @@ Plan& Plan::operator=(Plan &&other) {
     return *this;
 }
 
-
-
-// Copy Assignment Operator
-Plan& Plan::operator=(const Plan &other) {
-    if (this != &other) {
-        plan_id = other.plan_id;
-        status = other.status;
-        life_quality_score = other.life_quality_score;
-        economy_score = other.economy_score;
-        environment_score = other.environment_score;
-        if (selectionPolicy) {
-            delete selectionPolicy;
-        }
-        selectionPolicy = (other.selectionPolicy != nullptr) ? other.selectionPolicy->clone() : nullptr;
-        for (Facility* facility : underConstruction) {
-            delete facility;
-        }
-        underConstruction.clear();
-        for (Facility* facility : other.underConstruction) {
-            underConstruction.push_back(new Facility(*facility));
-        }
-        for (Facility* facility : facilities) {
-            delete facility;
-        }
-        facilities.clear();
-        for (Facility* facility : other.facilities) {
-            facilities.push_back(new Facility(*facility));
-        }
-    }
-    return *this;
-}
-
-
 const int Plan::getlifeQualityScore() const {return life_quality_score;}
 
 const int Plan::getEconomyScore() const {return economy_score;}
@@ -174,7 +171,7 @@ string Plan::getSelectionPolicy() const {//our method
         return "eco";
     } else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
         return "env";
-    }
+    }else {return "";}
 }
 
 void Plan::step(){
@@ -182,12 +179,12 @@ void Plan::step(){
     while (status == PlanStatus::AVALIABLE){
         Facility *selectedFacility = new Facility(this->selectionPolicy->selectFacility(facilityOptions),this->settlement.getName());
         addFacility(selectedFacility);
-        if (underConstruction.size() == this->settlement.getLimit()){
+        if (underConstruction.size() == static_cast<size_t>(this->settlement.getLimit())) {
             this->status = PlanStatus::BUSY; 
         }
     }
     // doing a step for all the facilities
-    for (int i = 0; i < underConstruction.size();){
+    for (size_t i = 0; i < underConstruction.size();){
         Facility* currFacility = underConstruction[i];
         FacilityStatus currStat = currFacility->step();
         if (currStat == FacilityStatus::OPERATIONAL){
@@ -199,7 +196,7 @@ void Plan::step(){
 
     }
     //maybe the plan can be avalible
-    if (underConstruction.size() < this->settlement.getLimit()) {
+    if (underConstruction.size() < static_cast<size_t>(this->settlement.getLimit())){
         this->status = PlanStatus::AVALIABLE;
     }
 }

@@ -33,7 +33,7 @@ class Simulation {
         void open();
         SelectionPolicy* createSelectionPolicy(const string& selectionPolicyType);
         ~Simulation();// Destructor
-        vector<FacilityType> facilitiesOptions;//fvhsvibsiv
+        
 
     private:
         bool isRunning;
@@ -41,7 +41,5 @@ class Simulation {
         vector<BaseAction*> actionsLog;
         vector<Plan> plans;
         vector<Settlement*> settlements;
-    //skjvnskjvbnsdkjvbnsdvbds
-
-
+        vector<FacilityType> facilitiesOptions;
 };
