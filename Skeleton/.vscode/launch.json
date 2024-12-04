@@ -1,26 +1,26 @@
 {
-  "version": "0.2.0",
-  "configurations": [
+    "version": "0.2.0",
+    "configurations": [
       {
-          "name": "Linux",
-          "type": "cppdbg",
-          "request": "launch",
-          "program": "${workspaceFolder}SPL1/Skeleton/bin/main",
-          "args": ["config_file.txt"],
-          "stopAtEntry": false,
-          "cwd": "${workspaceFolder}",
-          "environment": [],
-          "externalConsole": false,
-          "MIMode": "gdb",
-          "setupCommands": [
-              {
-                  "description": "Enable pretty-printing for gdb",
-                  "text": "-enable-pretty-printing",
-                  "ignoreFailures": true
-              }
-          ],
-          "preLaunchTask": "build",
-          "miDebuggerPath": "/usr/bin/gdb"
+        "name": "Run main with config_file.txt",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/Skeleton/bin/main",
+        "args": ["${workspaceFolder}/Skeleton/config_file.txt"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/Skeleton",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build"
       }
-  ]
-}
+    ]
+  }
+  

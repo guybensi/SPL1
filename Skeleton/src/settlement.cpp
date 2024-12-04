@@ -6,7 +6,7 @@ using std::string;
 using std::vector;
 
 //Constructor
-Settlement ::Settlement(const string &name, SettlementType type): name(name), type(type){
+Settlement ::Settlement(const string &name, SettlementType type): name(name), type(type),limit(){
     switch (type) {
         case SettlementType::VILLAGE:
             limit = 1;
