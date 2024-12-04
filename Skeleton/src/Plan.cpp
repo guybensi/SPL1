@@ -215,9 +215,7 @@ void Plan::addFacility(Facility* facility){
         for (auto *facility : underConstruction){
             cout << facility->getName() << endl;
         }
-
     }  
-    
 }
 
 const string Plan::toString() const {
