@@ -23,7 +23,7 @@ void BaseAction::complete(){status = ActionStatus::COMPLETED;}
 void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
     this->errorMsg = errorMsg; 
-    cout << getErrorMsg() <<endl;
+    cout << "ERROR: " << getErrorMsg() <<endl;
 }
 const string& BaseAction::getErrorMsg() const{return errorMsg;}
 
@@ -228,9 +228,9 @@ BackupSimulation::BackupSimulation(){}
 void BackupSimulation::act(Simulation &simulation) {
     // if the backup has a simulation we need to delete it first
     if (backup != nullptr) {
-        delete backup; 
+        *backup = simulation; 
     }
-    backup = new Simulation(simulation);   
+    else {backup = new Simulation(simulation);} 
     complete();
 }
 BackupSimulation* BackupSimulation::clone() const {return new BackupSimulation(*this);}

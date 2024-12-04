@@ -81,7 +81,6 @@ string BalancedSelection::getName() const{return "bal";}//our method
 EconomySelection::EconomySelection():lastSelectedIndex(-1){}
 
 const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
-    cout << "select eco" << endl;
     for (std::size_t i = 1;i<=facilitiesOptions.size(); i++){
         int releventIndex = (lastSelectedIndex + i) % facilitiesOptions.size();
         if (facilitiesOptions[releventIndex].getCategory() == FacilityCategory::ECONOMY) {

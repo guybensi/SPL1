@@ -12,6 +12,14 @@ using std::vector;
 Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions):
 plan_id(planId), settlement(settlement), selectionPolicy(selectionPolicy), facilityOptions(facilityOptions), status(PlanStatus::AVALIABLE), life_quality_score(0), economy_score(0), environment_score(0){}
 
+
+//Copy Constructor for copy simulation
+Plan::Plan(const Settlement &settlement, const Plan &other):Plan(other.plan_id, settlement, other.selectionPolicy->clone(), other.facilityOptions){
+    status = other.status;
+    life_quality_score = other.getlifeQualityScore();
+    economy_score = other.getEconomyScore();
+    environment_score = other.getEnvironmentScore();
+}
 // Copy Constructor
 Plan::Plan(const Plan &other):Plan(other.plan_id, other.settlement, other.selectionPolicy->clone(), other.facilityOptions){
     status = other.status;
@@ -170,7 +178,6 @@ string Plan::getSelectionPolicy() const {//our method
 
 void Plan::step(){
     //as long as i can build more
-    cout << "step plan" << endl;
     while (status == PlanStatus::AVALIABLE){
         Facility *selectedFacility = new Facility(this->selectionPolicy->selectFacility(facilityOptions),this->settlement.getName());
         addFacility(selectedFacility);
@@ -183,7 +190,6 @@ void Plan::step(){
         Facility* currFacility = underConstruction[i];
         FacilityStatus currStat = currFacility->step();
         if (currStat == FacilityStatus::OPERATIONAL){//זה לא נכנס אף פעם משום מש
-            cout << "the facility is operational" << endl; 
             addFacility(currFacility);
             scoreUpdate(currFacility);
             underConstruction.erase(underConstruction.begin() + i);
@@ -207,19 +213,16 @@ const vector<Facility*>& Plan::getFacilities() const{return facilities;}
 void Plan::addFacility(Facility* facility){
     if(facility->getStatus() == FacilityStatus::OPERATIONAL){
             facilities.push_back(facility);
-            cout << "add facility to facilities" << endl;
     }
     else{
         underConstruction.push_back(facility);
-        cout << "add facility to under" << endl;
-        for (auto *facility : underConstruction){
-            cout << facility->getName() << endl;
-        }
     }  
 }
 
 const string Plan::toString() const {
     string statusString;
+    string result = "PlanID: " + std::to_string(plan_id) + "\n";
+    result = result + "SettlementName: " + settlement.getName() + "\n"; 
     switch (status) {
         case PlanStatus::AVALIABLE:
             statusString =  "AVALIABLE";
@@ -228,13 +231,11 @@ const string Plan::toString() const {
             statusString = "BUSY";
             break;
     }
-    string result = "PlanID: " + std::to_string(plan_id) + "\n";
     if (status == PlanStatus::AVALIABLE) {
         result = result +  "Status: Available" + "\n";
     } else {
         result = result + "Status: Busy" + "\n";
     }
-    result += "SettlementName: " + settlement.getName() + "\n"; 
     result += "SelectionPolicy: " + selectionPolicy->getName() + "\n"; 
     result += "LifeQualityScore: " + std::to_string(life_quality_score) + "\n";
     result += "EconomyScore: " + std::to_string(economy_score) + "\n";
@@ -242,12 +243,14 @@ const string Plan::toString() const {
     result += "Under Construction:";
     result +=  "\n";
     for (Facility* facility : underConstruction) {
-        result += "FacilityName: " + facility->toString() + "\n";
+        result += "Facility Name: " + facility->getName() + "\n";
+        result += "FacilityN Status: " + facility->statusToString() + "\n";
     }
     result += "\nFacilities:";
     result += "\n";
     for (Facility* facility : facilities) {
-        result += "FacilityName: " + facility->toString() + "\n";
+        result += "Facility Name: " + facility->getName() + "\n";
+        result += "FacilityN Status: " + facility->statusToString() + "\n";
     }
     return result;
 }
@@ -257,10 +260,11 @@ void Plan::scoreUpdate(Facility* facility) {// our method
     this->life_quality_score += facility->getLifeQualityScore();
     this->economy_score += facility->getEconomyScore();  
     this->environment_score += facility->getEnvironmentScore();  
-    cout << "score update plan" << endl;
 }
 
 const int Plan::getId(){return plan_id;}// our method
+
+Settlement Plan::getSettlement(){return settlement;}//our method
 
 // Destructor
 Plan::~Plan() {

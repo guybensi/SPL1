@@ -54,30 +54,31 @@ const int Facility ::getTimeLeft() const {return timeLeft;}
 FacilityStatus Facility ::step(){
     if (timeLeft > 0) {
         timeLeft--;
-        cout << "the time left " + timeLeft << endl;
     }
     if (timeLeft == 0){
-        cout << "the time of the fac left" << endl;
         setStatus(FacilityStatus::OPERATIONAL);
     }
-    cout << "step facility" << endl;
     return getStatus();
 }
 
 void  Facility ::setStatus(FacilityStatus status){
-    switch (status) {
-        case FacilityStatus::UNDER_CONSTRUCTIONS:
-            this->status = FacilityStatus::UNDER_CONSTRUCTIONS;
-            break;
-        case FacilityStatus::OPERATIONAL:
-            this->status = FacilityStatus::OPERATIONAL;
-            cout << "the stat now is opera" << endl;
-            break;
-            cout << toString() << endl;
-    }
+    this->status = status;
 }
 
 const FacilityStatus& Facility ::getStatus() const {return status;}
+
+const string Facility ::statusToString() const {
+    string stirngStatus;
+    switch (this->status) {
+        case FacilityStatus::UNDER_CONSTRUCTIONS:
+            stirngStatus = "UNDER_CONSTRUCTIONS";
+            break;
+        case FacilityStatus::OPERATIONAL:
+            stirngStatus = "OPERATIONAL";
+            break;
+    }
+    return stirngStatus;
+}
 
 const string Facility ::toString() const{
     string CurrStatus;

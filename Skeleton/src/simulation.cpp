@@ -40,7 +40,6 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
             int lifeQualityScore = std::stoi(arguments[4]);
             int ecoScore = std::stoi(arguments[5]);
             int envScore = std::stoi(arguments[6]);
-            std::cout << "constractor " << std::endl;
             if(!addFacility(FacilityType(name, category, price, lifeQualityScore, ecoScore, envScore))){throw std::runtime_error("Invalid facility");}      
         }
         else if (arguments[0] == "plan"){//creating a new plan
@@ -63,6 +62,15 @@ Simulation::Simulation(const Simulation &other):isRunning(other.isRunning), plan
     for (Settlement* curr : other.settlements) {
         settlements.push_back(new Settlement(*curr));
     }
+    for(Plan plan : other.plans){
+        string settlementName = plan.getSettlement().getName();
+        Settlement *newSettelemnet = getSettlement(settlementName); 
+        Plan newPlan = Plan(*newSettelemnet,plan);
+        plans.push_back(newPlan);
+    }
+    planCounter = other.planCounter;
+    isRunning = other.isRunning; 
+    facilitiesOptions = other.facilitiesOptions;  
 }
 
 // Copy Assignment Operator
@@ -71,7 +79,6 @@ Simulation& Simulation::operator=(const Simulation &other){
         isRunning = other.isRunning;
         planCounter = other.planCounter;
         facilitiesOptions = other.facilitiesOptions;
-        plans = other.plans;
          for (BaseAction* action : actionsLog) {
             delete action;
         }
@@ -86,6 +93,12 @@ Simulation& Simulation::operator=(const Simulation &other){
         for (Settlement* currSet : other.settlements) {
             settlements.push_back(new Settlement(*currSet));
         } 
+        for(Plan plan : other.plans){
+            string settlementName = plan.getSettlement().getName();
+            Settlement *newSettelemnet = getSettlement(settlementName); 
+            Plan newPlan = Plan(*newSettelemnet,plan);
+            plans.push_back(newPlan);
+        }   
         return *this;   
     } 
 }
@@ -104,7 +117,6 @@ void Simulation::start() {
         if (arguments.empty()) continue;
         //Simulate Step
         if (arguments[0] == "step"){
-            cout << "step in start simulation" << endl;
             if (arguments.size() != 2){
                 cout << "Invalid action" << endl;
                 continue;
@@ -262,15 +274,12 @@ bool Simulation::addSettlement(Settlement *settlement){
 }
 //--------------------------------------------------------------------------------------
 bool Simulation::addFacility(FacilityType facility){
-    std::cout << "add facility in simulation " << std::endl;
     if (isFacilityExists(facility.getName())){return false;}
     facilitiesOptions.push_back(facility);
-    std::cout << "push back " << std::endl;
     return true;
 }
 //--------------------------------------------------------------------------------------
 bool Simulation::isFacilityExists(const string &facilityName){
-    std::cout << "ais facility exists in simulation " << std::endl;
     for (const FacilityType curr : facilitiesOptions){
         if (curr.getName() == facilityName){return true;}
     }
@@ -302,18 +311,17 @@ Plan& Simulation::getPlan(const int planID){
 int Simulation::getplanCounter(){return planCounter;}//new method******
 //--------------------------------------------------------------------------------------
 void Simulation::step(){
-    cout << "step in simulation" << endl;
-    for (Plan p : plans){
+    for (Plan &p : plans){
         p.step();
     }
 }
 //--------------------------------------------------------------------------------------
 void Simulation::close(){
     for (const Plan& curr : plans){
-        cout << curr.toString() << '\n' ;
+        cout << curr.toString() << endl;
+        cout << "\n" << endl;
     }
     isRunning = false;
-    //צריך לשחרר זכרון פה?
 }
 //--------------------------------------------------------------------------------------
 void Simulation::open(){isRunning = true;}

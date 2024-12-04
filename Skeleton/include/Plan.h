@@ -15,6 +15,7 @@ class Plan {
     public:
         Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions);
         Plan(const Plan &other);//Copy Constructor
+        Plan(const Settlement &settlement, const Plan &other);//Copy Constructor for copy simulation
         Plan& operator=(const Plan &other);//Copy Assignment Operator      
         Plan(Plan &&other);// Move Constructor
         Plan& operator=(Plan &&other);// Move Assignment Operator
@@ -31,6 +32,7 @@ class Plan {
         const string toString() const;
         void scoreUpdate(Facility* facility);//our method
         const int getId();// our method
+        Settlement getSettlement();//our method
         ~Plan();//Destructor
 
     private:

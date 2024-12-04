@@ -52,6 +52,7 @@ class Facility: public FacilityType {
         FacilityStatus step();
         void setStatus(FacilityStatus status);
         const FacilityStatus& getStatus() const;
+        const string statusToString() const;//our mrthod
         const string toString() const;
         ~Facility();//destcractor
 
