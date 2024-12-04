@@ -58,7 +58,7 @@ Plan::Plan(Plan &&other)
     // Now reset other object's data after move
     other.facilities.clear(); 
     other.underConstruction.clear();
-    other.selectionPolicy = nullptr;  // Since we don't own it, make it nullptr
+    other.selectionPolicy = nullptr; 
 }
 
 // Move Assignment Operator
@@ -133,7 +133,7 @@ const int Plan::getEnvironmentScore() const {return environment_score;}
 
 void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {
     if (this->selectionPolicy != selectionPolicy) {
-        delete this->selectionPolicy;
+        delete this->selectionPolicy;//delete the curr selection policy
         this->selectionPolicy = selectionPolicy;
     }
 }
@@ -148,6 +148,7 @@ bool Plan::changePolicy(const string newPolicy){//our method
     } else if (newPolicy == "nve") {
         setSelectionPolicy(new NaiveSelection());
         return true;
+        //for balace we need to sent the curr scores and the scores in under constraction
     } else if (newPolicy == "bal") {
         int newEcoScore = getEconomyScore();
         int newLifeScore = getlifeQualityScore();
@@ -189,7 +190,7 @@ void Plan::step(){
     for (int i = 0; i < underConstruction.size();){
         Facility* currFacility = underConstruction[i];
         FacilityStatus currStat = currFacility->step();
-        if (currStat == FacilityStatus::OPERATIONAL){//זה לא נכנס אף פעם משום מש
+        if (currStat == FacilityStatus::OPERATIONAL){
             addFacility(currFacility);
             scoreUpdate(currFacility);
             underConstruction.erase(underConstruction.begin() + i);

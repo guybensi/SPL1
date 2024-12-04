@@ -10,7 +10,7 @@ using namespace std;
 //Constructor
 FacilityType ::FacilityType(const string &name, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
  name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score){}
-
+//Copy Constructor
 FacilityType ::FacilityType(const FacilityType&other):FacilityType(other.name, other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score){}//copy constractor
 
 FacilityType& FacilityType::operator=(const FacilityType &other){return *this;}
@@ -39,10 +39,10 @@ Facility::Facility(const string &name, const string &settlementName, const Facil
       status(FacilityStatus::UNDER_CONSTRUCTIONS), 
       timeLeft(price) {}
 
-
+//Second Constructor
 Facility ::Facility(const FacilityType &type, const string &settlementName):
 FacilityType(type), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price){}
-
+//Copy Constructor
 Facility ::Facility(const Facility &other): Facility(other.name, other.getSettlementName(), other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score){}//copy constractor
 
 Facility& Facility ::operator=(const Facility &other){return *this;}//copy assignment operator

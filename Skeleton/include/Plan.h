@@ -28,7 +28,7 @@ class Plan {
         void step();
         void printStatus();
         const vector<Facility*> &getFacilities() const;
-        void addFacility(Facility* facility); //////////////////////ori
+        void addFacility(Facility* facility);
         const string toString() const;
         void scoreUpdate(Facility* facility);//our method
         const int getId();// our method

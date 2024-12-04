@@ -23,7 +23,7 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
     while (std::getline(file, line)) {
         // if there is # ignore this line
         if (line.empty() || line[0] == '#'){continue;}
-        // using the givven class
+        // using the given class
         std::vector<std::string> arguments = Auxiliary::parseArguments(line);
         if (arguments[0] == "settlement"){//creating a new settlement
             if (arguments.size() != 3){throw std::runtime_error("Invalid settlement format in config file");}
@@ -48,7 +48,7 @@ Simulation::Simulation(const string &configFilePath) : isRunning(false), planCou
             Settlement *settlement = getSettlement(settlementName);
             string policyType = arguments[2];  
             SelectionPolicy *selectionPolicy = createSelectionPolicy(policyType);
-            addPlan(settlement, selectionPolicy);//צריך לוודא תקינות של הקובץ
+            addPlan(settlement, selectionPolicy);
         }
     }
     file.close();
@@ -308,7 +308,7 @@ Plan& Simulation::getPlan(const int planID){
     }
 }
 //--------------------------------------------------------------------------------------
-int Simulation::getplanCounter(){return planCounter;}//new method******
+int Simulation::getplanCounter(){return planCounter;}//our method
 //--------------------------------------------------------------------------------------
 void Simulation::step(){
     for (Plan &p : plans){
@@ -327,7 +327,7 @@ void Simulation::close(){
 void Simulation::open(){isRunning = true;}
 
 //--------------------------------------------------------------------------------------
-SelectionPolicy* Simulation::createSelectionPolicy(const string& selectionPolicyType){//new method******
+SelectionPolicy* Simulation::createSelectionPolicy(const string& selectionPolicyType){//our method
     SelectionPolicy* policy = nullptr;
     if (selectionPolicyType == "eco") {
         policy = new EconomySelection();

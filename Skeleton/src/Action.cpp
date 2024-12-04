@@ -214,7 +214,7 @@ string PrintActionsLog::description()const {//our method
 //--------------------------------------------------------------------------------------
 
 Close::Close(){}
-void Close::act(Simulation &simulation){//צריך לשחרר זכרון פה?
+void Close::act(Simulation &simulation){
     simulation.close();
 }   
 Close* Close::clone() const{return new Close(*this);}
