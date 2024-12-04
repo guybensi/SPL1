@@ -55,7 +55,7 @@ Simulation::Simulation(const string &configFilePath):isRunning(false), planCount
 }
 
 // Copy Constructor
-Simulation::Simulation(const Simulation &other):isRunning(other.isRunning), planCounter(other.planCounter),actionsLog(), plans(other.plans),settlements(), facilitiesOptions(other.facilitiesOptions){ 
+Simulation::Simulation(const Simulation &other):isRunning(other.isRunning), planCounter(other.planCounter),actionsLog(), plans(),settlements(), facilitiesOptions(other.facilitiesOptions){ 
     for (BaseAction* action : other.actionsLog) {
         actionsLog.push_back(action->clone());
     }
@@ -93,6 +93,7 @@ Simulation& Simulation::operator=(const Simulation &other){
         for (Settlement* currSet : other.settlements) {
             settlements.push_back(new Settlement(*currSet));
         } 
+        plans.clear();
         for(Plan plan : other.plans){
             string settlementName = plan.getSettlement().getName();
             Settlement *newSettelemnet = getSettlement(settlementName); 

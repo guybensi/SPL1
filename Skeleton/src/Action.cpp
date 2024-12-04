@@ -109,11 +109,11 @@ AddSettlement* AddSettlement::clone() const{return new AddSettlement(*this);}
 string AddSettlement::SettlementTypeToString() const {//our method
     switch (settlementType) {
         case SettlementType::VILLAGE:
-            return "VILLAGE";
+            return "0";
         case SettlementType::CITY:
-            return "CITY";
+            return "1";
         case SettlementType::METROPOLIS:
-            return "METROPOLIS";
+            return "2";
     }
     return "";
 }
