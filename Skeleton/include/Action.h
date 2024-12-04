@@ -112,7 +112,7 @@ class ChangePlanPolicy : public BaseAction {
         string previousPolicy;// saving the old policy
 };
 
-// ***********עשיתי עד כאן
+
 class PrintActionsLog : public BaseAction {
     public:
         PrintActionsLog();

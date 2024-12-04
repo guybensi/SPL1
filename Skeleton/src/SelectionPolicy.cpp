@@ -41,7 +41,8 @@ const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>
     if (facilitiesOptions.empty()) {
         throw std::runtime_error("No facilities available to select ");} 
     int diff = INT_MAX;
-    const FacilityType* ans = nullptr; //לבדוק לגבי קונסט של A
+    const FacilityType* ans = nullptr;
+    //we want to choose the facility wich for whom the distance will be minimal
     for (const FacilityType& currfacility : facilitiesOptions){
         int distancecheck = distance (currfacility);
         if ( distancecheck < diff){
@@ -49,10 +50,11 @@ const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>
             diff = distancecheck;
         } 
     }
+    //we need to update the scores for everyfacility in UnderConstraction
     LifeQualityScore += ans->getLifeQualityScore();
     EconomyScore += ans->getEconomyScore();
     EnvironmentScore += ans->getEnvironmentScore();
-    return *ans;//לוודא טיפוס החזרה? צריך למחוק אותו? 
+    return *ans;
 }
 
 int BalancedSelection ::distance (const FacilityType &CurrFacility){
